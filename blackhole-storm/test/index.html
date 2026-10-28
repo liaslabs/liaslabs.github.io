@@ -2338,7 +2338,7 @@ const FTUE2=()=>DEV?new URLSearchParams(location.search).get('ftue')!=='0':REL>=
 // The Android app (Capacitor) runs this same page from inside the app; native features go through its plugins.
 const NATIVE=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()),APP_URL='https://liaslabs.github.io/blackhole-storm/';
 const CAP=n=>NATIVE&&window.Capacitor.Plugins?window.Capacitor.Plugins[n]||null:null;
-const BUILD="bhs-v135",APPVER="test";
+const BUILD="bhs-v136",APPVER="test";
 // 22 Oct: canvas roundRect arrived in Chrome 99; on an older Android WebView the first level threw on every frame and froze
 if(window.CanvasRenderingContext2D&&!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
   r=Math.max(0,Math.min(+(Array.isArray(r)?r[0]:r)||0,Math.abs(w)/2,Math.abs(h)/2));
@@ -3976,10 +3976,11 @@ const ADS_TEST={rewarded:'ca-app-pub-3940256099942544/5224354917',interstitial:'
 const ADS={on:false,privacy:false,t:0};
 function adsKick(ms){if(ADS.on||!NATIVE||Date.now()-ADS.t<60e3)return;ADS.t=Date.now();setTimeout(adsInit,ms);} // not tied to Google Play billing; tried again a minute later if it failed
 function adsPreload(){const nb=CAP('Bhs');if(ADS.on&&!ADS.showing&&gState!=='playing'&&nb&&nb.adsPreload&&(!nb.adsDrop||interDue())){lagNat('adsPreload');LAG.adh=1;nb.adsPreload().catch(()=>{});}}
-function adsDrop(){const nb=CAP('Bhs');if(ADS.on&&nb&&nb.adsDrop){lagNat('adsDrop');LAG.adh=0;nb.adsDrop().catch(()=>{});}} /* a level starts: no ad is held while it plays (a loaded ad stalls the game now and then) */ /* an app with adsPreload loads the next ad here; older builds reload on their own */
+function adsPrepRw(){const nb=CAP('Bhs');if(!ADS.on||SHOP.noAds||!nb||!nb.adsPrepRewarded)return;clearTimeout(adsPrepRw.t);adsPrepRw.t=setTimeout(()=>{if(gState==='playing'||!$('mCont').classList.contains('on'))return;lagNat('adsPrep');nb.adsPrepRewarded().catch(()=>{});},1500);} /* 28 Oct: the continue screen starts loading a rewarded ad (the game is stopped; 1.5 s in, so a quick continue never loads one under play) */
+function adsDrop(){clearTimeout(adsPrepRw.t);const nb=CAP('Bhs');if(ADS.on&&nb&&nb.adsDrop){lagNat('adsDrop');LAG.adh=0;nb.adsDrop().catch(()=>{});}} /* a level starts: no ad is held while it plays (a loaded ad stalls the game now and then) */ /* an app with adsPreload loads the next ad here; older builds reload on their own */
 async function adsInit(){const nb=CAP('Bhs');if(ADS.on||!nb||!nb.adsStart||!ADS_UNITS.rewarded)return;if(rel(7)&&gState==='playing'){setTimeout(adsInit,3000);return;} /* 1.4.7: the ad SDK never starts up mid-level */
   try{await ROBOTP;lagNat('adsStart');const r=await nb.adsStart(ROBOT?ADS_TEST:ADS_UNITS); /* 27 Oct: Google's test phones get Google's test ads: their robot taps on real ads counted as invalid clicks */ADS.privacy=!!(r&&r.privacy);
-    if(r&&r.ok){ADS.on=true;window.BHS_ADS={rewarded:async()=>{ADS.showing=1;let x={};try{x=await nb.adsRewarded();}finally{ADS.showing=0;}LAG.ad=performance.now();if(!x.shown)showRewarded.none=true;return !!x.earned;},interstitial:async()=>{ADS.showing=1;try{await nb.adsInterstitial();}finally{ADS.showing=0;}LAG.ad=performance.now();}};} /* LAG.ad: when an ad last closed; the next one starts loading right then */
+    if(r&&r.ok){ADS.on=true;window.BHS_ADS={rewarded:async()=>{ADS.showing=1;let x={};try{x=await nb.adsRewarded();}finally{ADS.showing=0;}LAG.ad=performance.now();if(!x.shown)showRewarded.none=true;if(rel(12)&&(x.why||x.how))ev('ax_'+(x.shown?x.how:x.why));return !!x.earned;},interstitial:async()=>{ADS.showing=1;try{await nb.adsInterstitial();}finally{ADS.showing=0;}LAG.ad=performance.now();}};} /* LAG.ad: when an ad last closed; the next one starts loading right then */
     monApply();if($('sSet').classList.contains('on'))syncSettingsUI();if($('sShop').classList.contains('on'))renderShop();}catch(e){}}
 async function showRewarded(){showRewarded.none=false;
   if(SHOP.noAds)return true;if(MON.busy)return false;MON.busy=true;SND.duck(.15,1e5);
@@ -5564,7 +5565,7 @@ function showCont(){
       later(()=>{const vis=id=>{const e=$(id);return !!e&&!e.parentNode.hidden&&e.style.display!=='none';},pair=(a,b)=>{const on=vis(a)&&vis(b);$(a).parentNode.classList.toggle('half',on);$(b).parentNode.classList.toggle('half',on);};if(!rel(11))pair('contDia','contYes');pair('contRetry','contNo');},0);}
     $('contYes').textContent=`${T('DEVAM ET')} · ${contStarCost()} ⭐`;$('contRetry').style.display=cl?'':'none';$('contRetry').textContent=rel(9)?T('🔄 TEKRAR DENE')+(heartsOn(level)?' · ⛽ 1':''):heartsOn(level)?T('🔄 SEVİYEYİ YENİDEN OYNA · ⛽ 1 YAKIT'):T('🔄 SEVİYEYİ ÜCRETSİZ YENİDEN OYNA');$('contNo').textContent=cl?'ANA MENÜ':'BİTİR';contC11(tOut);showModal('mCont');return;}
   $('mCont').classList.remove('r9');$('contMsg').hidden=false;$('contMsg').textContent=cl?`Seviye ${level}'de canların bitti.`:'Kaldığın yerden devam etmek ister misin?';
-  $('contRetry').style.display=cl?'':'none';$('contNo').textContent=cl?'ANA MENÜ':'BİTİR';if(typeof flHelpCont==='function')flHelpCont();showModal('mCont');
+  $('contRetry').style.display=cl?'':'none';$('contNo').textContent=cl?'ANA MENÜ':'BİTİR';if(typeof flHelpCont==='function')flHelpCont();showModal('mCont');if(rel(12)&&monOn()&&adReady())adsPrepRw();
 }
 function retryLevel(){hideModals();SND.duck(1,0);SND.setDrone(.14,650);addLB(totalScore);if(totalScore>bestScore)bestScore=totalScore;saveG();resetRun(false);}
 function gameOver(){natMark('game over');if(rel(11)&&gameMode==='survival'&&!gameOver.c){gameOver.c=1;later(()=>{gameOver.c=0;},2000);liveCount('survplay',1);}
@@ -7208,7 +7209,7 @@ function v2Fail(msg){
   if(gState==='tip'){hideModals();G2.tip=null;gState='playing';SND.duck(1,0);} // a tip card opened earlier in the same frame must not swallow the loss
   if(gState!=='playing')return;gState='over';G2.failMsg=msg;if(typeof trail==='function')trail('fail '+(msg||'lives'));SND.setDrone(.08,300);SND.duck(.35,2);
   if(msg){if(msg!=='SÜRE DOLDU'&&msg!=='DEV GEZEGEN KAÇTI')lives=0; /* the clock running out is not a death: hearts (and stars) stay */v2Call(msg==='DEV GEZEGEN KAÇTI'?(G2.boss&&G2.boss.bt&&G2.boss.bt!=='planet'?'YILDIZ KAÇTI':'GEZEGEN KAÇTI'):msg,'','#ff7a5c',2,true);}
-  setTimeout(()=>{if(!G2.on||gState!=='over')return;if(gameMode==='sprint'){sprintEnd();return;}if(gameMode==='survival'){gameOver();return;}showCont();},850); /* a lost level: the continue offer (its ad loads when the player taps for it) */
+  setTimeout(()=>{if(!G2.on||gState!=='over')return;if(gameMode==='sprint'){sprintEnd();return;}if(gameMode==='survival'){gameOver();return;}showCont();},850); /* a lost level: the continue offer (28 Oct: a rewarded ad starts loading 1.5 s in) */
 }
 // time bought when the clock ran out: back to the fight with more seconds; hearts and the one continue stay untouched
 // 1.5.2 time: a crystal from the bag can be used during a timed level, and a time piece (+5 s) floats by twice per timed level.
@@ -7227,9 +7228,10 @@ function v2DrawTclk(o,r){const fade=Math.min(1,Math.max(0,(TCLK.life-o.age)/1.5)
   ctx.strokeStyle='rgba(109,255,208,.9)';ctx.lineWidth=Math.max(2,r*.14);ctx.beginPath();ctx.arc(0,0,r*1.28,-Math.PI/2,-Math.PI/2+TAU*left/TCLK.life);ctx.stroke(); /* the ring empties as it is about to vanish */
   const fs=Math.round(Math.max(sp2(13),r*.85));ctx.font=`900 ${fs}px "IBM Plex Sans Condensed",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';const ty=-r*1.28-fs*.75,tx='+'+TCLK.s+' '+T('sn');ctx.lineWidth=4;ctx.strokeStyle='rgba(0,0,0,.75)';ctx.strokeText(tx,0,ty);ctx.fillStyle='#6dffd0';ctx.fillText(tx,0,ty);
   ctx.restore();}
-function v2AddTime(sec){if(typeof lagMark==='function')lagMark('cont');G2.dur=Math.max(G2.dur,G2.t)+sec;G2.failMsg=null;G2.immT=Math.max(G2.immT,1.5);hideModals();gState='playing';lastT=performance.now();SND.setDrone(.14,650);SND.duck(1,0);sfx('powerup',{vol:.6});v2Call('+'+sec+' sn','','#8dffcb',1.2,true);updateUI();if(rel(7))later(saveG,400);else saveG();
+function v2AddTime(sec){try{adsDrop();}catch(e){}if(typeof lagMark==='function')lagMark('cont');G2.dur=Math.max(G2.dur,G2.t)+sec;G2.failMsg=null;G2.immT=Math.max(G2.immT,1.5);hideModals();gState='playing';lastT=performance.now();SND.setDrone(.14,650);SND.duck(1,0);sfx('powerup',{vol:.6});v2Call('+'+sec+' sn','','#8dffcb',1.2,true);updateUI();if(rel(7))later(saveG,400);else saveG();
   for(const o of G2.objs)if(o.k==='meteor'&&Math.hypot(o.x-hX,o.y-hY)<sp2(260))o.st='dead';}
 function v2Revive(){ // one continue per run (spec §42)
+  try{adsDrop();}catch(e){} // back to play: an ad loaded on the continue screen is let go
   G2.contUsed=true;{const am=v2AM();for(let i=0;i<am;i++)v2ArcForm(i,'arc',i*.08);G2.arcs=am;}G2.arcFill=.5;if(G2.guard){const g=G2.guard;g.hp=Math.max(g.hp,50);if(g.keep!=null){g.t=g.keep;g.keep=null;}}lives=G2.failMsg==='SÜRE DOLDU'?Math.max(1,lives):1;G2.combo=0;comboCount=0;G2.rage=V2K.cont.rage;G2.ready=false;G2.rageT=0;G2.immT=V2K.cont.imm;
   hideModals();updateUI();gState='playing';lastT=performance.now();if(typeof lagMark==='function')lagMark('cont');if(rel(7))later(saveG,400);else saveG();SND.setDrone(.14,650);SND.duck(1,0);sfx('powerup',{vol:.6}); /* 1.4.7: the save waits for the first frames back in play */
   for(const o of G2.objs)if(o.k==='meteor'&&Math.hypot(o.x-hX,o.y-hY)<sp2(260))o.st='dead';
@@ -8631,6 +8633,7 @@ function raidBoss(K){const R=RAID;if(!K){K=RAID_B[R.nextB++];if(!K)return;}const
   if(K.id==='bomba')Object.assign(b,{x:W*.5,y:H*.78,r:52*S,bt:'nova',flash:0,gs:1,fade:1,cd:2});
   if(K.id==='tara')Object.assign(b,{x:W*.5,y:H*.5,r:30*S,a:0,L:Math.min(W,H)*(R.arena?.34:.46)});
   if(K.id==='bol')Object.assign(b,{x:W*.2,y:H*.7,r:58*S,vx:120*S,vy:-90*S,sp:0,tw:null});
+  if(R.arena){const f=RAIDK.zoom/ARENA_ZOOM;b.r*=f;if(b.pull)b.pull*=f;if(b.L)b.L*=1;} /* 28 Oct: the arena's closer camera made the holes easier to see; the bosses keep the size on screen they had */
   b.r0=b.r;R.bs.push(b);if(R.t>.5&&!R.arena){liveCall(K.n,T(K.d),`rgb(${K.col})`,2,true);sfx('bossIntro',{vol:.55,rev:.4});}}
 // the hazards as circles and segments, for hits and for the bots' fear
 function raidCircles(){const o=[];for(const b of RAID.bs){if(b.in>.4||b.die!=null)continue;if(b.id==='bol'&&b.tw)for(const h of b.tw)o.push({x:h.x,y:h.y,r:h.r,b});else o.push({x:b.x,y:b.y,r:raidBR(b),b});}return o;}
@@ -8663,7 +8666,7 @@ function raidStep(dt){const R=RAID;if(R.end>=0)return;R.t+=dt;const S=G2.S,me=R.
       if(!b.tw){mv(b);if(b.sp>7){b.sp=0;const s=Math.hypot(b.vx,b.vy)||1,v=150*S;b.tw=[{x:b.x,y:b.y,r:b.r*.7,vx:-b.vy/s*v,vy:b.vx/s*v},{x:b.x,y:b.y,r:b.r*.7,vx:b.vy/s*v,vy:-b.vx/s*v}];if(R.arena)liveCall(T('IŞINA DEĞME!'),'','#d8ff6a',1.2,true);v2Burst(b.x,b.y,26,'#d8ff6a',2,7,.7,2.2);v2Sfx('armor',{vol:.4,rate:.6});}}
       else{if(b.sp<=4.5)for(const h of b.tw)mv(h);else{const [a,q]=b.tw,mx=(a.x+q.x)/2,my=(a.y+q.y)/2;for(const h of b.tw){h.x+=(mx-h.x)*Math.min(1,3*dt);h.y+=(my-h.y)*Math.min(1,3*dt);}b.x=mx;b.y=my;if(Math.hypot(a.x-q.x,a.y-q.y)<6*S+2){b.tw=null;b.sp=0;}}}}}
   if(R.arena)for(const a of R.bs){if((a.id!=='avci'&&a.id!=='bol')||a.die!=null||a.tw)continue;for(const o of R.bs){if(o===a||o.id==='tara'||o.die!=null)continue;const dx=a.x-o.x,dy=a.y-o.y,d=Math.hypot(dx,dy)||1,m=raidBR(a)+raidBR(o)+30*S;if(d<m){a.x+=dx/d*(m-d);a.y+=dy/d*(m-d);}}} /* 27 Oct: no boss on top of another */
-  for(let i=R.mines.length-1;i>=0;i--){const m=R.mines[i];m.t-=dt;if(m.t<=0){R.mines.splice(i,1);R.booms.push({x:m.x,y:m.y,t:0,R:(R.arena?95:120)*S});v2Sfx('boom',{vol:.35,rate:1.2});shake=Math.max(shake,3);}}
+  for(let i=R.mines.length-1;i>=0;i--){const m=R.mines[i];m.t-=dt;if(m.t<=0){R.mines.splice(i,1);R.booms.push({x:m.x,y:m.y,t:0,R:(R.arena?95*RAIDK.zoom/ARENA_ZOOM:120)*S});v2Sfx('boom',{vol:.35,rate:1.2});shake=Math.max(shake,3);}}
   for(let i=R.booms.length-1;i>=0;i--){const e=R.booms[i];e.t+=dt;if(e.t>.55)R.booms.splice(i,1);}
   const C=raidCircles(),tb=R.bs.find(b=>b.id==='tara'&&b.in<=.4),arms=tb?raidArms(tb):[],gb=R.bs.find(b=>b.id==='cekim'&&b.die==null);if(R.arena)for(const b of R.bs)if(b.id==='bol'&&b.tw&&b.die==null&&b.sp>.5){const [a,q]=b.tw,mx=(a.x+q.x)/2,my=(a.y+q.y)/2+Math.sin(clock*3)*a.r*.25;arms.push([a.x,a.y,mx,my,'isin'],[mx,my,q.x,q.y,'isin']);} // 27 Oct (owner): the thread between the halves breaks a shell too
   // the pull of the giant planet: on your hole it moves where your finger aims, so it creeps in while you hold still
@@ -8766,7 +8769,7 @@ function raidDraw(gl){const R=RAID,S=G2.S,t=clock;ctx.save();RAID_LAB.length=0;i
       else raidNeb(b.x,b.y,b.r,t,2,0,al,b.sp>5.6?(b.sp-5.6)/1.4:0);} /* a twin-core nebula: the cores spin faster and drift apart just before it splits */
     if(b.die!=null)continue;if(b.rad){ctx.save();v2DrawRadSign(arenaRP(b));ctx.restore();ctx.globalAlpha=al;}const tx=b.id==='bol'&&b.tw?b.tw[0]:b;ctx.globalAlpha=al;raidLab(T(b.k.n),tx.x,tx.y+(tx.r||b.r)*1.15+4,`rgb(${b.k.col})`,al,'top');}
   ctx.globalAlpha=1;
-  for(const m of R.mines){const k=1-m.t/(R.arena?2:1.7);ctx.strokeStyle=`rgba(255,90,60,${.2+.4*k})`;ctx.lineWidth=1.5;ctx.setLineDash([4,5]);ctx.beginPath();ctx.arc(m.x,m.y,(R.arena?95:120)*S,0,TAU);ctx.stroke();ctx.setLineDash([]);
+  for(const m of R.mines){const k=1-m.t/(R.arena?2:1.7);ctx.strokeStyle=`rgba(255,90,60,${.2+.4*k})`;ctx.lineWidth=1.5;ctx.setLineDash([4,5]);ctx.beginPath();ctx.arc(m.x,m.y,(R.arena?95*RAIDK.zoom/ARENA_ZOOM:120)*S,0,TAU);ctx.stroke();ctx.setLineDash([]);
     ctx.fillStyle='#1c1f28';ctx.beginPath();ctx.arc(m.x,m.y,10*S+3,0,TAU);ctx.fill();ctx.fillStyle=Math.floor(t*(4+k*10))%2?'#ff4a3a':'#5a1a14';ctx.beginPath();ctx.arc(m.x,m.y,4*S+2,0,TAU);ctx.fill();ctx.strokeStyle='#ffb36a';ctx.lineWidth=2;ctx.beginPath();ctx.arc(m.x,m.y,14*S+4,-Math.PI/2,-Math.PI/2+TAU*k);ctx.stroke();}
   ctx.save();ctx.globalCompositeOperation='lighter';for(const e of R.booms){const k=e.t/.55,rr=e.R*Math.min(1,e.t/.25),g=ctx.createRadialGradient(e.x,e.y,0,e.x,e.y,rr+1);g.addColorStop(0,`rgba(255,240,200,${.7*(1-k)})`);g.addColorStop(.6,`rgba(255,150,50,${.4*(1-k)})`);g.addColorStop(1,'rgba(255,80,20,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(e.x,e.y,rr+1,0,TAU);ctx.fill();ctx.strokeStyle=`rgba(255,220,150,${1-k})`;ctx.lineWidth=4;ctx.stroke();}ctx.restore();
   for(const p of R.ps){if(p.out)continue;const pr=p.me?G2.R:p.rr*S;
@@ -9215,11 +9218,11 @@ function kpJoin(mode){if(KP.ws)kpClose();KP.mode=mode;KP.st='q';KP.go=null;KP.re
   try{ws=new WebSocket(KP_URL+'/ws?'+q);}catch(e){toast('⚠️',T('CANLI KAPIŞMA'),T('Sunucuya bağlanılamadı. Biraz sonra yeniden dene.'));return;}
   KP.ws=ws;const el=kpCard();
   el.innerHTML=`<div class="h">${mode==='duel'?'⚔️ '+T('RAKİP ARANIYOR'):'🌌 '+T('BEKLEME SALONU')}</div><div class="kpQ" id="kpQ">${mode==='duel'?'<div class="kpRoul" id="kpRoul"></div>':'<div class="kpLob" id="kpLob"></div>'}</div><div class="kpW" id="kpW">…</div><div class="row"><button class="btn sec" id="kpCancel" style="width:100%">${T('VAZGEÇ')}</button></div>`;
-  showModal('mKp');$('kpCancel').onclick=()=>{kpBye();hideModals();};
+  showModal('mKp');$('kpCancel').onclick=()=>{kpBye();KP.st='';hideModals();kpBackOut();};
   if(mode==='duel')kpRoulette();
   kpWire(ws);}
 function kpWire(ws){ws.onmessage=e=>{let m;try{m=JSON.parse(e.data);}catch(x){return;}kpMsg(m);};
-  ws.onclose=()=>{if(KP.ws!==ws)return;const was=KP.st;KP.ws=null;if(was==='res'){kpReNo(T('Rakip ayrıldı.'));return;}if(was==='q'){hideModals();toast('⚠️',T('CANLI KAPIŞMA'),T('Bağlantı koptu. Yeniden dene.'));KP.st='';}else if(was==='play'||was==='go'){kpRejoin();}else if(was==='wait'){kpRejoin();}};
+  ws.onclose=()=>{if(KP.ws!==ws)return;const was=KP.st;KP.ws=null;if(was==='res'){kpReNo(T('Rakip ayrıldı.'));return;}if(was==='q'){hideModals();kpBackOut();toast('⚠️',T('CANLI KAPIŞMA'),T('Bağlantı koptu. Yeniden dene.'));KP.st='';}else if(was==='play'||was==='go'){kpRejoin();}else if(was==='wait'){kpRejoin();}};
   ws.onerror=()=>{};}
 // a dropped connection during the match: the game goes on, and tries to get back into the same match for a few seconds
 // (the server keeps the place 45 s, 26 Oct: a network switch or a short trip to the background; it also survives a server restart);
@@ -9350,7 +9353,8 @@ function kpOppStep(dt){const q=kpOpp();if(!q)return;const {p,g}=q,bot=!!p.b;
   if(G2.kpGuest&&!KP.gotO&&(G2.t||0)>2.5)G2.kpGuest=false; // no bodies from the host (an older server, a lost link): this phone makes its own, the field is never empty
   let R;
   if(bot){const a=g.ai||kpBotNew(g);kpBotClock(a,dt);R=kpBotR(a);kpBotMove(g,dt,R);g.hx=a.x;g.hy=a.y;g.s=a.s;}
-  else{g.r+=(g.tr-g.r)*Math.min(1,dt*6);g.vx=g.vx||0;g.vy=g.vy||0;const ag=Math.min(.2,Math.max(0,(performance.now()-(g.ts||0))/1000)),px=Math.min(1,Math.max(0,g.tx+g.vx*ag))*W,py=Math.min(1,Math.max(0,g.ty+g.vy*ag))*H,k=Math.min(1,dt*18); // where its phone said, a little ahead along its way
+  else{if(G2.kpHost){const v=!!(g.f&4);if(v&&!g.vtxW&&!G2.ending){G2.swarm=(G2.swarm||0)+16;G2.swarmT=.15;}g.vtxW=v;} /* 28 Oct (owner: Lidya's Vortex did nothing against him): only the host makes the bodies, so the rival's Vortex swarm is made here, in the shared field */
+    g.r+=(g.tr-g.r)*Math.min(1,dt*6);g.vx=g.vx||0;g.vy=g.vy||0;const ag=Math.min(.2,Math.max(0,(performance.now()-(g.ts||0))/1000)),px=Math.min(1,Math.max(0,g.tx+g.vx*ag))*W,py=Math.min(1,Math.max(0,g.ty+g.vy*ag))*H,k=Math.min(1,dt*18); // where its phone said, a little ahead along its way
     g.hx=g.hx==null?px:g.hx+(px-g.hx)*k;g.hy=g.hy==null?py:g.hy+(py-g.hy)*k;R=Math.max(sp2(V2K.r0)*.9,g.r*W);}
   g.hr=R;if(g.hitT>0)g.hitT-=dt;if(g.shk>0)g.shk-=dt;const x=g.hx,y=g.hy,a=g.ai,live=bot&&!a.dead,vt=live&&a.vtxT>0,Gr=bot?Math.min(a.rr*V2K.gK*(vt?V2K.rage.g:1),V2K.gMax)*G2.S:R*2.3*(g.f&4?V2K.rage.g:1),pk=vt||g.f&4?2400:1500,
     anti=bot?live&&a.antiT>0:!!(g.f&2),mag=bot?live&&a.magT>0:!!(g.f&1),hb=bot?(a.hold?a.hold.o:null):g.hob; // 26 Oct: the rival's antimatter and magnet work here as yours do (a player's come with its place)
@@ -9497,6 +9501,8 @@ function kpReAsk(from){const q=$('kpReq'),b=$('kpAgain');if(!q||!b)return;sfx('a
 function kpReNo(why){if(KP.st!=='res')return;const q=$('kpReq'),b=$('kpAgain');kpClose();KP.re=0;
   if(q){q.hidden=false;q.classList.add('off');q.textContent=why;}
   if(b){b.disabled=false;b.classList.remove('kpPulse');b.textContent='🔍 '+T('YENİ RAKİP BUL');b.onclick=()=>{hideModals();kpJoin('duel');};}}
+// leaving the queue: back to the hub if it is open, else to the menu (a search started from a result screen sat over the old field)
+function kpBackOut(){const h=$('sKp');if(!(h&&h.classList.contains('on')))showMenu();}
 function kpBye(){try{KP.ws&&KP.ws.readyState===1&&KP.ws.send(JSON.stringify({t:'bye'}));}catch(e){}kpClose();}
 function kpClose(){const w=KP.ws;KP.ws=null;if(KP.st!=='res')KP.st='';clearInterval(KP.send);if(w)try{w.onclose=null;w.close();}catch(e){}const b=$('kpBoard');if(b)b.hidden=true;}
 // leaving a running match (pause -> menu) is leaving it: placed last, no reward, the rewarded match is used up (the server's rule)
