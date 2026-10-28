@@ -1558,7 +1558,7 @@ body.raid #hdr>:not(#pauseBtn):not(#raidHud):not(#boost2),body.raid #badge,body.
 .arPop{position:fixed;z-index:410;transform:translate(-50%,-50%);font:900 20px var(--fd);color:#ffe08a;white-space:nowrap;text-shadow:0 0 8px rgba(255,200,60,.8),0 2px 3px #000;pointer-events:none;animation:arPop 1.3s ease-out forwards;}@keyframes arPop{0%{opacity:0;transform:translate(-50%,-30%) scale(.6);}15%{opacity:1;transform:translate(-50%,-60%) scale(1.15);}35%{transform:translate(-50%,-70%) scale(1);}100%{opacity:0;transform:translate(-50%,-120%) scale(1);}}body.arena .flyr{width:34px;height:34px;font-size:30px;line-height:34px;}@keyframes arPop{0%{opacity:0;transform:translate(-50%,-30%) scale(.5);}12%{opacity:1;transform:translate(-50%,-60%) scale(1.35);}30%{transform:translate(-50%,-70%) scale(1);}75%{opacity:1;}100%{opacity:0;transform:translate(-50%,-130%) scale(1);}}#raidHud .arSt{color:#ffd76a;display:inline-block;}#raidHud .arSt.bump{animation:bump .3s;}
 #raidHud .rt{display:flex;flex-direction:column;align-items:center;min-width:44px;}#raidHud .rt small{font:700 8px var(--fd);letter-spacing:.08em;color:#8b93a8;}#raidHud .rt b{font:800 17px var(--fd);color:#ffd76a;font-variant-numeric:tabular-nums;}
 #raidHud .rc{flex:1;min-width:0;padding:3px 4px;border-radius:8px;background:rgba(var(--c),.12);border:1px solid rgba(var(--c),.35);display:flex;flex-direction:column;line-height:1.15;}#raidHud .rc.mine{border-color:rgba(var(--c),.8);}
-#raidHud .rc b{font:800 9px var(--fd);color:rgb(var(--c));white-space:nowrap;overflow:hidden;}#raidHud .rc span{font-size:9px;color:#ff5a6a;white-space:nowrap;}#raidHud .rc span em{color:rgba(255,255,255,.2);font-style:normal;}
+#raidHud .rc b{font:800 9px var(--fd);color:rgb(var(--c));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}#raidHud .rc span{font-size:9px;color:#ff5a6a;white-space:nowrap;}#raidHud .rc span em{color:rgba(255,255,255,.2);font-style:normal;}
 #raidHud .rc.dn{background:rgba(255,90,70,.15);border-color:rgba(255,90,70,.5);}#raidHud .rc.dn span{color:#ff8a7a;font-weight:800;}#raidHud .rc.out{opacity:.4;filter:grayscale(1);}#raidHud .rc.out span{color:#9aa2b6;font-size:8px;}
 .rdInv h3{margin:4px 0;}.rdBar{height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin:10px 6px 4px;overflow:hidden;}.rdBar i{display:block;height:100%;background:#ffb35a;}
 .rdSl{display:flex;flex-direction:column;gap:6px;margin:8px 0;}.rdS{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.04);transition:background .3s,border-color .3s;border:1px solid transparent;}
@@ -5626,7 +5626,7 @@ function startSprint(seed,opt={}){natMark('sprint start');
   hX=W/2;hY=H/2;hBaseX=hX;hBaseY=hY;hWanderT=0;hWpTimer=0;
   setZone(S.zone);$('pauseBtn').textContent='⏸';$('combo').style.opacity='0';updateCombo();
   $('badge').className='hud-float resc';if(opt.fm&&typeof fmIc==='function')$('badge').innerHTML=fmIc(opt.fm)+' '+escH(T(opt.fm.n));else $('badge').textContent=opt.fm?`${opt.fm.ic} ${T(opt.fm.n)}`:opt.chal?`⚔️ ${opt.chal.n.toUpperCase()} · ${opt.chal.s.toLocaleString(LOC)}`:opt.daily?`🏁 GÜNLÜK YARIŞ #${opt.daily}`:'⏱ 60 SANİYE';
-  SND.resume();SND.startDrone();SND.music('game');if(!opt.fm&&!RAID)recStart();
+  SND.resume();SND.startDrone();SND.music(RAID&&opt.arena?'boss':'game');if(!opt.fm&&!RAID)recStart(); /* 28 Oct (owner: the arena's music came late): asking for the zone track first dropped the boss track the lobby had loaded */
   gState='playing';lastT=performance.now();updateUI();
   G2.sprLv=S.lvl;v2Start('sprint');if(opt.fm){const m=opt.fm;later(()=>{if(G2.on&&FMRUN)v2Call(T(m.n),T(m.d),'#ffd76a',2.2,true);},400);}else if(!RAID){const r=sprRuleOf(seed);later(()=>{if(G2.on&&gameMode==='sprint')v2Call(T('GÜNÜN KURALI'),r.ic+' '+T(r.n),'#ffd76a',1.8,true);},400);}
 }
@@ -8984,12 +8984,20 @@ function arenaPlay(){if(!DEV)return;fmClose();hideModals();const o=document.crea
     <div class="arSl" id="arSl">${seat('',bestLevel|0,1)}${ARENA_SEATS.map(()=>seat('',0,0)).join('')}</div>
     <div class="arRules">${ARENA_RULES.map(r=>`<span>${r[0]}<b>${T(r[1])}</b></span>`).join('')}</div><div class="arKit"><span>${T('Kendi stoğun')}</span><span>${T('Lab ve avatar gücün')}</span><span>${T('Vortex yok')}</span></div>
     <div class="row"><button class="b2" id="arNo">${T('VAZGEÇ')}</button></div></div>`;
+  {const used=new Set([String(playerName||'')]);for(const p of ARENA_SEATS){p.n=arenaBotName(used);used.add(p.n);}} /* 28 Oct (owner): the pilots are named like players, as in 1 v 1 */
   document.body.appendChild(o);try{SND.fetchMus('boss');}catch(e){} /* 28 Oct (owner: the music came late): the match track loads while the lobby waits */const t0=performance.now(),id=++arenaPlay.n;o.querySelector('#arNo').onclick=()=>{arenaPlay.n++;fmClose();};
   const tick=()=>{if(arenaPlay.n!==id||!$('arCd'))return;const t=(performance.now()-t0)/1000,left=Math.max(0,10-t),rows=o.querySelectorAll('.arS');
     $('arCd').textContent=Math.ceil(left);$('arArc').style.strokeDashoffset=String(276.5*(1-left/10));
     ARENA_SEATS.forEach((p,i)=>{const r=rows[i+1];if(t>=p.at&&!r.classList.contains('on')){r.classList.add('on');r.querySelector('span b').textContent=p.n;r.querySelector('small').textContent=arenaRankTxt(p.k)+' · '+T('{n}. seviye',{n:p.lv});r.querySelector('i').innerHTML=kpAv(AV2[i%AV2.length],34);r.querySelector('em').textContent=T('HAZIR');sfx('coin',{vol:.35,rate:1.2});}});
     if(t>=10.8){arenaPlay.n++;fmClose();startSprint(0x5eed^Date.now()%1e6,{raid:1,arena:1});return;}
     if(t>=10)$('arW').textContent=T('Takım tamam · başlıyor!');requestAnimationFrame(tick);};tick();}
+// the same names as the live server's computer pilots (server/live/live.js botName): first names from where the game is played, typed the way people type them
+const ARENA_BOTN=['Mert','Elif','Kaan','Ayşe','Burak','Zeynep','Emre','Deniz','Selin','Ömer','Ece','Yusuf','Arda','Defne','Kerem','İlayda','Berk','Eylül','Onur','Cem','Melis','Tuna','Efe','Buse','Hakan','Sena','Barış','Nehir','Ozan','Damla','Alp','Irmak',
+  'Lucas','Mateo','Sofia','Emma','Liam','Noah','Mia','Leo','Ana','Juan','Carlos','Diego','Maria','Valentina','Camila','Santi','Arjun','Rohan','Priya','Aditya','Rahul','Ananya','Vikram','Sneha','Minh','Linh','Huy','Trang','Rizky','Putri','Budi','Dewi',
+  'Yuki','Haruto','Sakura','Ren','Ivan','Dima','Olga','Artem','Ahmed','Omar','Youssef','Lina','Rafa','João','Pedro','Bruno','Kai','Max','Jonas','Luca','Hugo','Léa','Chloé','Nico','Jake','Tyler','Ethan','Chris','Sam','Alex','Jordan','Ryan'],
+  ARENA_BOTX=['xNova','DarkStar','pixel','SkyRider','Neo','shadow','Turbo','Zoro','Ghost','Blaze','Falcon','Ninja','Viper','Storm'];
+function arenaBotName(used){const pick=a=>a[Math.floor(Math.random()*a.length)];for(let k=0;k<12;k++){let n=Math.random()<.14?pick(ARENA_BOTX):pick(ARENA_BOTN);const r=Math.random();if(r<.22)n=n.toLocaleLowerCase('tr');else if(r<.3)n=n.toLocaleUpperCase('tr');
+  const d=Math.random();if(d<.2)n+=1+Math.floor(Math.random()*98);else if(d<.3)n+=pick(['07','34','06','35','99','00','23','61']);else if(d<.34)n+='_'+(1+Math.floor(Math.random()*8));n=[...n].slice(0,11).join('');if(!used.has(n))return n;}return 'Pilot'+(10+Math.floor(Math.random()*89));}
 arenaPlay.n=0;const AV2=['🔭','🎧','🪐'];
 function arenaSetup(){const R=RAID;R.arena=1;G2.live=1;$('badge').textContent='🌌 '+T('KOZMİK ARENA');
   ARENA_SEATS.forEach((p,i)=>{if(R.ps[i+1])R.ps[i+1].n=p.n;});
