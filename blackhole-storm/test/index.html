@@ -1555,6 +1555,7 @@ button.hlp[disabled]{opacity:.55;animation:none;}
 .fx .fm-ch .bar{height:7px;border-radius:5px;background:rgba(255,255,255,.08);margin:7px 0 0;overflow:hidden;}.fx .fm-ch .bar i{display:block;height:100%;background:linear-gradient(90deg,#b46bff,#ff5fa8);}
 /* fleet raid (dev preview): the team bar in place of the score, the invite's seats, the result */
 body.raid #hdr>:not(#pauseBtn):not(#raidHud):not(#boost2),body.raid #badge,body.raid:not(.arena) #boost2{display:none!important;} /* 28 Oct (owner: no shield, no Hawking in the arena): the power tray lives in the top bar and was hidden with it */#raidHud{flex:1;min-width:0;display:flex;align-items:center;gap:4px;}
+.arPop{position:fixed;z-index:60;transform:translate(-50%,-50%);font:900 24px var(--fd);color:#ffd76a;text-shadow:0 0 10px rgba(255,200,60,.7),0 2px 3px #000;pointer-events:none;animation:arPop 1.4s ease-out forwards;}@keyframes arPop{0%{opacity:0;transform:translate(-50%,-30%) scale(.5);}15%{opacity:1;transform:translate(-50%,-60%) scale(1.25);}35%{transform:translate(-50%,-70%) scale(1);}100%{opacity:0;transform:translate(-50%,-120%) scale(1);}}#raidHud .arSt{color:#ffd76a;display:inline-block;}#raidHud .arSt.bump{animation:bump .3s;}
 #raidHud .rt{display:flex;flex-direction:column;align-items:center;min-width:44px;}#raidHud .rt small{font:700 8px var(--fd);letter-spacing:.08em;color:#8b93a8;}#raidHud .rt b{font:800 17px var(--fd);color:#ffd76a;font-variant-numeric:tabular-nums;}
 #raidHud .rc{flex:1;min-width:0;padding:3px 4px;border-radius:8px;background:rgba(var(--c),.12);border:1px solid rgba(var(--c),.35);display:flex;flex-direction:column;line-height:1.15;}#raidHud .rc.mine{border-color:rgba(var(--c),.8);}
 #raidHud .rc b{font:800 9px var(--fd);color:rgb(var(--c));white-space:nowrap;overflow:hidden;}#raidHud .rc span{font-size:9px;color:#ff5a6a;white-space:nowrap;}#raidHud .rc span em{color:rgba(255,255,255,.2);font-style:normal;}
@@ -8646,7 +8647,7 @@ function raidHit(p,why){if(!p.alive||p.inv>0)return;if(RAID.arena&&!(p.me&&(G2.i
 function raidDown(p){p.alive=false;p.ghost=RAIDK.ghost;p.rv=0;p.lives=0;const x=p.me?hX:p.x,y=p.me?hY:p.y;p.x=x;p.y=y;v2Burst(x,y,34,`rgb(${p.col})`,2,8,.8,2.4);shake=Math.max(shake,p.me?10:4);
   liveCall(p.me?T('DÜŞTÜN!'):p.n+' '+T('DÜŞTÜ'),RAID.arena?'':T('6 sn içinde kurtarılmalı'),'#ff8a7a',1.4,true);if(p.me){G2.immT=1e9;sfx('gameover',{vol:.4});}}
 function raidUp(p,by){p.alive=true;p.lives=1;p.ghost=0;p.rv=0;p.inv=2;by.resc++;v2Burst(p.x,p.y,40,'#7dff8a',2,8,.8,2.4);sfx('powerup',{vol:.6,rate:1.1});
-  if(RAID.arena){by.sc=(by.sc||0)+(by.me?0:ARENA_PTS.resc);if(by.me){totalScore+=ARENA_PTS.resc;}}liveCall(p.n+' '+T('KURTARILDI'),RAID.arena?'':'+'+RAIDK.resc+' · '+by.n,'#7dff8a',1.4,true);if(p.me){lives=1;G2.immT=2;if(RAID.arena){hX=G2.tx=G2.lx=p.x;hY=G2.ty=G2.ly=p.y;DRAG.ax=hX;DRAG.ay=hY;}updateUI();}}
+  if(RAID.arena){by.sc=(by.sc||0)+(by.me?0:ARENA_PTS.resc);if(by.me){totalScore+=ARENA_PTS.resc;arenaRescFly(p);}}liveCall(p.n+' '+T('KURTARILDI'),RAID.arena?'':'+'+RAIDK.resc+' · '+by.n,'#7dff8a',1.4,true);if(p.me){lives=1;G2.immT=2;if(RAID.arena){hX=G2.tx=G2.lx=p.x;hY=G2.ty=G2.ly=p.y;DRAG.ax=hX;DRAG.ay=hY;}updateUI();}}
 // one step of the raid, after the hole has moved
 function raidStep(dt){const R=RAID;if(R.end>=0)return;R.t+=dt;const S=G2.S,me=R.me,ev=raidFast()?8:RAIDK.every;
   if(R.arena)arenaBosses();else if(R.nextB<RAID_B.length&&R.t>=ev*(R.nextB-1))raidBoss();
@@ -8730,7 +8731,7 @@ function raidResult(){if(RAID&&RAID.arena){arenaResult();return;}const R=RAID,rs
   document.body.appendChild(o);o.querySelector('#rdMenu').onclick=()=>{fmClose();hideModals();showMenu();};o.querySelector('#rdAgain').onclick=()=>{fmClose();hideModals();showMenu();later0(raidPlay,300);};}
 // the top bar: the team's time, then one chip per seat (hearts, or the seconds a fallen one has left)
 function raidHud(make){let h=$('raidHud');if(make&&!h){h=document.createElement('div');h.id='raidHud';h.className='notr';$('hdr').insertBefore(h,$('pauseBtn'));}if(!h||!RAID)return;const R=RAID;
-  h.innerHTML=`<div class="rt"><small>${T('TAKIM')}</small><b>${fmtT(R.team||0)}</b>${R.arena?`<em>${R.kills||0} boss · ${arenaK2(arenaScore(R.me))}</em>`:''}</div>`+R.ps.map(p=>`<div class="rc${p.out?' out':!p.alive?' dn':''}${p.me?' mine':''}" style="--c:${p.col}"><b>${p.me?T('SEN'):p.n}</b><span>${p.out?T('ELENDİ'):!p.alive?'⏳ '+Math.ceil(p.ghost):'♥'.repeat(p.lives)+'<em>'+'♥'.repeat(Math.max(0,RAIDK.lives-p.lives))+'</em>'}</span></div>`).join('');}
+  h.innerHTML=`<div class="rt"><small>${T('TAKIM')}</small><b>${fmtT(R.team||0)}</b>${R.arena?`<em>${R.kills||0} boss · ${arenaK2(arenaScore(R.me))}${R.stOn?` · <span class="arSt" data-w="stars">${R.stF||0} ⭐</span>`:''}</em>`:''}</div>`+R.ps.map(p=>`<div class="rc${p.out?' out':!p.alive?' dn':''}${p.me?' mine':''}" style="--c:${p.col}"><b>${p.me?T('SEN'):p.n}</b><span>${p.out?T('ELENDİ'):!p.alive?'⏳ '+Math.ceil(p.ghost):'♥'.repeat(p.lives)+'<em>'+'♥'.repeat(Math.max(0,RAIDK.lives-p.lives))+'</em>'}</span></div>`).join('');}
 // GL: the giant planet is drawn by the body shader with the other bodies
 function raidGl(list){for(const b of RAID.bs)if(b.cell!==undefined){b.gs=1-b.in;list.push(b);}}
 // before the frame is drawn: a fallen or eliminated player has no hole on the screen
@@ -8820,6 +8821,10 @@ function arenaSosBeep(dt){const R=RAID,dn=R.ps.filter(p=>!p.me&&!p.alive&&!p.out
   const last=Math.min(...dn.map(p=>p.ghost)),gap=last<2?.5:1;R.sosT=(R.sosT||0)-dt;if(R.sosT>0)return;R.sosT=gap;
   const c=SND.ctx;if(!c||!SND.sfxBus||!SET.sfx||c.state!=='running')return;const t0=c.currentTime+.02,n=last<2?2:3;
   for(let k=0;k<n;k++){const s=t0+k*.13,o=c.createOscillator(),g=c.createGain();o.type='square';o.frequency.setValueAtTime(last<2?1320:1100,s);g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.05,s+.01);g.gain.setValueAtTime(.05,s+.06);g.gain.linearRampToValueAtTime(0,s+.08);o.connect(g);g.connect(SND.sfxBus);o.start(s);o.stop(s+.1);}}
+// 28 Oct (owner): the rescuer sees the stars the rescue pays (+10, counted in the result) pop out of the saved hole and fly to a star count in the bar
+function arenaRescFly(p){const R=RAID;if(!DEV&&arenaLeft()<=0)return;R.stOn=1;raidHud();const b=$('fx').getBoundingClientRect(),x=b.left+p.x*b.width/W,y=b.top+p.y*b.height/H;
+  const e=document.createElement('div');e.className='arPop';e.textContent='+'+ARENA_RESC+' ⭐';e.style.left=x+'px';e.style.top=y+'px';document.body.appendChild(e);
+  sfx('achieve',{vol:.45});later(()=>{flyReward(e,{stars:ARENA_RESC},()=>{R.stF=(R.stF||0)+ARENA_RESC;raidHud();});},450);later(()=>e.remove(),1400);}
 const ARENA_PTS={dr:300,kill:2000,resc:1000},ARENA_MAG=190;
 function arenaPts(p,n){n=Math.round(n);if(!n)return;if(p.me){totalScore+=n;levelScore+=n;}else p.sc=(p.sc||0)+n;}
 const arenaScore=p=>p.me?Math.max(0,totalScore-(RAID.sc0||0)):Math.round(p.sc||0);
