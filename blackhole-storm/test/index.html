@@ -8672,6 +8672,7 @@ function raidStep(dt){const R=RAID;if(R.end>=0)return;R.t+=dt;const S=G2.S,me=R.
   // the pull of the giant planet: on your hole it moves where your finger aims, so it creeps in while you hold still
   if(gb&&gb.in<=0&&me.alive){const dx=gb.x-hX,dy=gb.y-hY,d=Math.hypot(dx,dy)||1;if(d<gb.pull){const f=(R.arena?75:110)*S*(1-d/gb.pull)*dt,ux=dx/d*f,uy=dy/d*f;G2.tx+=ux;G2.ty+=uy;if(DRAG.id!==null){DRAG.ax+=ux;DRAG.ay+=uy;}}}
   // the team
+  if(R.arena&&ARENA_SOS.includes('s'))arenaSosBeep(dt);
   for(const p of R.ps){if(p.out)continue;p.inv=Math.max(0,p.inv-dt);
     if(!p.alive){p.ghost-=dt;const rs=R.ps.find(q=>q.alive&&Math.hypot(q.x-p.x,q.y-p.y)<(q.me?G2.R:q.rr*S)+34*S+8);if(rs){p.rv+=dt;if(p.rv>=RAIDK.rev)raidUp(p,rs);}else p.rv=Math.max(0,p.rv-dt*.5);
       if(!p.alive&&p.ghost<=0){p.out=true;liveCall(p.me?T('ELENDİN'):p.n+' '+T('ELENDİ'),'','#9aa2b6',1.2,true);for(const q of R.ps)if(q.tg===p)q.tg=null;}continue;}
@@ -8777,7 +8778,7 @@ function raidDraw(gl){const R=RAID,S=G2.S,t=clock;ctx.save();RAID_LAB.length=0;i
       ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,pr*2.1,-Math.PI/2,-Math.PI/2+TAU*clamp(p.ghost/RAIDK.ghost,0,1));ctx.stroke();
       if(p.rv>0){ctx.strokeStyle='#7dff8a';ctx.lineWidth=5;ctx.beginPath();ctx.arc(p.x,p.y,pr*2.6,-Math.PI/2,-Math.PI/2+TAU*clamp(p.rv/RAIDK.rev,0,1));ctx.stroke();}
       ctx.fillStyle='#fff';ctx.font='900 13px "IBM Plex Sans Condensed",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(Math.ceil(p.ghost),p.x,p.y);
-      ctx.restore();raidLab((p.me?T('SEN'):p.n)+' · '+T('KURTAR!'),p.x,p.y-pr*2.7-2,`rgb(${p.col})`,1,'bottom');continue;} /* laid out with the other names: no text on text */
+      ctx.restore();if(R.arena&&!p.me&&ARENA_SOS)arenaSos(p,pr,t);raidLab((p.me?T('SEN'):p.n)+' · '+T('KURTAR!'),p.x,p.y-pr*2.7-2,`rgb(${p.col})`,1,'bottom');continue;} /* laid out with the other names: no text on text */
     if(!p.me){ctx.save();ctx.translate(p.x,p.y);if(p.inv>0&&Math.floor(p.inv*10)%2)ctx.globalAlpha=.45;const g=ctx.createRadialGradient(0,0,pr*.9,0,0,pr*2.3);g.addColorStop(0,`rgba(${p.col},.5)`);g.addColorStop(1,`rgba(${p.col},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,pr*2.3,0,TAU);ctx.fill();
       ctx.globalCompositeOperation='lighter';ctx.lineCap='round';for(let i=0;i<4;i++){const a=t*(2.2-i*.3)+i*1.4+p.i,rr=pr*(1.12+.14*i);ctx.strokeStyle=`rgba(${p.col},${.75-.15*i})`;ctx.lineWidth=Math.max(1.2,pr*(.2-.035*i));ctx.beginPath();ctx.arc(0,0,rr,a,a+1.8-.2*i);ctx.stroke();}
       ctx.globalCompositeOperation='source-over';ctx.fillStyle='#000';ctx.beginPath();ctx.arc(0,0,pr,0,TAU);ctx.fill();ctx.strokeStyle=`rgba(${p.col},.95)`;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,0,pr+.5,0,TAU);ctx.stroke();ctx.restore();}
@@ -8798,6 +8799,27 @@ if(DEV&&/[?&]raid\b/.test(location.search))setTimeout(()=>{if(!G2.on)raidPlay();
 // (1 pilot 28 s, 2 about 12 s, 4 about 4.5 s; each boss beaten makes the next ones 20 % tougher). A beaten boss is swallowed by the pilot nearest it, pays the whole team, and 8 s later another comes.
 // points (27 Oct, owner: the score matters): the bodies as in a level, every second in a boss's ring, the last bite, a rescue.
 // The bots score the same way, so the Star Pilot of a team is the one who really played best.
+// how a fallen teammate calls for help (owner 28 Oct: the countdown went unnoticed; chose s): a pulsing SOS in the hole and a dat-dat-dat beep.
+// The other drafts stay for comparison: ?dev&sos=a (waves) | b (arrow) | c (banner)
+const ARENA_SOS=DEV&&/[?&]sos=([abcs]+)/.test(location.search)?RegExp.$1:'s';
+function arenaSos(p,pr,t){const S=G2.S,me=RAID.ps[0],G='125,255,138';ctx.save();
+  if(ARENA_SOS.includes('a')){ctx.globalCompositeOperation='lighter';for(let k=0;k<3;k++){const ph=(t*.9+k/3)%1,rr=pr*1.6+ph*Math.max(pr*5,90*S);ctx.strokeStyle=`rgba(${G},${.85*(1-ph)})`;ctx.lineWidth=5*(1-ph)+1.5;ctx.beginPath();ctx.arc(p.x,p.y,rr,0,TAU);ctx.stroke();}
+    ctx.globalCompositeOperation='source-over';const q=1+.12*Math.sin(t*10);ctx.translate(p.x,p.y);ctx.scale(q,q);ctx.fillStyle='rgba(10,30,14,.75)';ctx.beginPath();ctx.arc(0,0,17,0,TAU);ctx.fill();ctx.strokeStyle=`rgb(${G})`;ctx.lineWidth=2.5;ctx.stroke();
+    ctx.fillStyle='#fff';ctx.font='900 22px "IBM Plex Sans Condensed",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(Math.max(0,Math.ceil(p.ghost)),0,1);ctx.setTransform(1,0,0,1,0,0);}
+  if(ARENA_SOS.includes('s')){const k=.5+.5*Math.sin(t*9),q=1+.14*k,rr=Math.max(pr*1.25,24);ctx.save();ctx.translate(p.x,p.y);ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(0,0,rr*.6,0,0,rr*2.4);g.addColorStop(0,`rgba(255,70,60,${.55*k})`);g.addColorStop(1,'rgba(255,70,60,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,rr*2.4,0,TAU);ctx.fill();
+    ctx.globalCompositeOperation='source-over';ctx.scale(q,q);ctx.fillStyle='rgba(40,6,6,.85)';ctx.beginPath();ctx.arc(0,0,rr,0,TAU);ctx.fill();ctx.strokeStyle=`rgba(255,90,80,${.6+.4*k})`;ctx.lineWidth=3;ctx.stroke();
+    ctx.fillStyle=`rgba(255,${120+100*k},${110+90*k},1)`;ctx.font=`900 ${Math.round(rr*.78)}px "IBM Plex Sans Condensed",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('SOS',0,1);ctx.restore();}
+  if(ARENA_SOS.includes('b')&&me.alive){const dx=p.x-hX,dy=p.y-hY,d=Math.hypot(dx,dy),ux=dx/d,uy=dy/d,a0=G2.R+10,a1=d-pr*2.3;if(a1>a0){ctx.strokeStyle=`rgba(${G},.9)`;ctx.lineWidth=4;ctx.setLineDash([10,10]);ctx.lineDashOffset=-t*60;ctx.beginPath();ctx.moveTo(hX+ux*a0,hY+uy*a0);ctx.lineTo(hX+ux*a1,hY+uy*a1);ctx.stroke();ctx.setLineDash([]);
+    const ex=hX+ux*a1,ey=hY+uy*a1,an=Math.atan2(uy,ux);ctx.fillStyle=`rgb(${G})`;ctx.beginPath();ctx.moveTo(ex+Math.cos(an)*14,ey+Math.sin(an)*14);ctx.lineTo(ex+Math.cos(an+2.4)*14,ey+Math.sin(an+2.4)*14);ctx.lineTo(ex+Math.cos(an-2.4)*14,ey+Math.sin(an-2.4)*14);ctx.fill();}}
+  if(ARENA_SOS.includes('c')){const on=Math.floor(t*4)%2,y=H*.2;ctx.font='900 22px "IBM Plex Sans Condensed",sans-serif';const tx=`${p.n} · ${T('KURTAR!')} ${Math.max(0,Math.ceil(p.ghost))}`,w=ctx.measureText(tx).width+44;
+    ctx.fillStyle=on?'rgba(20,90,40,.9)':'rgba(10,50,22,.9)';ctx.strokeStyle=`rgb(${G})`;ctx.lineWidth=2.5;ctx.beginPath();ctx.roundRect(W/2-w/2,y-20,w,40,20);ctx.fill();ctx.stroke();ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(tx,W/2,y+1);
+    ctx.globalAlpha=.25+.2*on;ctx.strokeStyle=`rgb(${G})`;ctx.lineWidth=14;ctx.strokeRect(0,0,W,H);}
+  ctx.restore();}
+// while a teammate is down: "dat dat dat" once a second, twice as often in the last 2 s (owner 28 Oct); quiet when only you are down, and with the sounds off
+function arenaSosBeep(dt){const R=RAID,dn=R.ps.filter(p=>!p.me&&!p.alive&&!p.out);if(!dn.length||!R.ps[0].alive){R.sosT=0;return;}
+  const last=Math.min(...dn.map(p=>p.ghost)),gap=last<2?.5:1;R.sosT=(R.sosT||0)-dt;if(R.sosT>0)return;R.sosT=gap;
+  const c=SND.ctx;if(!c||!SND.sfxBus||!SET.sfx||c.state!=='running')return;const t0=c.currentTime+.02,n=last<2?2:3;
+  for(let k=0;k<n;k++){const s=t0+k*.13,o=c.createOscillator(),g=c.createGain();o.type='square';o.frequency.setValueAtTime(last<2?1320:1100,s);g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.05,s+.01);g.gain.setValueAtTime(.05,s+.06);g.gain.linearRampToValueAtTime(0,s+.08);o.connect(g);g.connect(SND.sfxBus);o.start(s);o.stop(s+.1);}}
 const ARENA_PTS={dr:300,kill:2000,resc:1000},ARENA_MAG=190;
 function arenaPts(p,n){n=Math.round(n);if(!n)return;if(p.me){totalScore+=n;levelScore+=n;}else p.sc=(p.sc||0)+n;}
 const arenaScore=p=>p.me?Math.max(0,totalScore-(RAID.sc0||0)):Math.round(p.sc||0);
