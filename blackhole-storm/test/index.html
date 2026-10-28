@@ -8646,8 +8646,8 @@ function raidHit(p,why){if(!p.alive||p.inv>0)return;if(RAID.arena&&!(p.me&&(G2.i
   if(RAID.arena)arenaZap(p,why,p.x,p.y);p.lives--;p.inv=RAID.arena?2.2:1.5;v2Burst(p.x,p.y,18,'#ff7a5c',2,6,.6,2);v2Sfx('armor',{vol:.35,rate:.9});if(p.lives<=0)raidDown(p);}
 function raidDown(p){p.alive=false;p.ghost=RAIDK.ghost;p.rv=0;p.lives=0;const x=p.me?hX:p.x,y=p.me?hY:p.y;p.x=x;p.y=y;v2Burst(x,y,34,`rgb(${p.col})`,2,8,.8,2.4);shake=Math.max(shake,p.me?10:4);
   liveCall(p.me?T('DÜŞTÜN!'):p.n+' '+T('DÜŞTÜ'),RAID.arena?'':T('6 sn içinde kurtarılmalı'),'#ff8a7a',1.4,true);if(p.me){G2.immT=1e9;sfx('gameover',{vol:.4});}}
-function raidUp(p,by){p.alive=true;p.lives=1;p.ghost=0;p.rv=0;p.inv=2;by.resc++;v2Burst(p.x,p.y,40,'#7dff8a',2,8,.8,2.4);sfx('powerup',{vol:.6,rate:1.1});
-  if(RAID.arena){by.sc=(by.sc||0)+(by.me?0:ARENA_PTS.resc);if(by.me){totalScore+=ARENA_PTS.resc;arenaRescFly(p);}}liveCall(p.n+' '+T('KURTARILDI'),RAID.arena?'':'+'+RAIDK.resc+' · '+by.n,'#7dff8a',1.4,true);if(p.me){lives=1;G2.immT=2;if(RAID.arena){hX=G2.tx=G2.lx=p.x;hY=G2.ty=G2.ly=p.y;DRAG.ax=hX;DRAG.ay=hY;}updateUI();}}
+function raidUp(p,by){p.alive=true;p.lives=1;p.ghost=0;p.rv=0;p.inv=RAID.arena?ARENA_SAFE:2;if(RAID.arena)p.blk=ARENA_SAFE; /* 28 Oct (owner): back in the arena as at the start: 3 s untouchable, ring blinking */by.resc++;v2Burst(p.x,p.y,40,'#7dff8a',2,8,.8,2.4);sfx('powerup',{vol:.6,rate:1.1});
+  if(RAID.arena){by.sc=(by.sc||0)+(by.me?0:ARENA_PTS.resc);if(by.me){totalScore+=ARENA_PTS.resc;arenaRescFly(p);}}liveCall(p.n+' '+T('KURTARILDI'),RAID.arena?'':'+'+RAIDK.resc+' · '+by.n,'#7dff8a',1.4,true);if(p.me){lives=1;G2.immT=RAID.arena?ARENA_SAFE:2;if(RAID.arena){hX=G2.tx=G2.lx=p.x;hY=G2.ty=G2.ly=p.y;DRAG.ax=hX;DRAG.ay=hY;}updateUI();}}
 // one step of the raid, after the hole has moved
 function raidStep(dt){const R=RAID;if(R.end>=0)return;R.t+=dt;const S=G2.S,me=R.me,ev=raidFast()?8:RAIDK.every;
   if(R.arena)arenaBosses();else if(R.nextB<RAID_B.length&&R.t>=ev*(R.nextB-1))raidBoss();
@@ -8660,13 +8660,14 @@ function raidStep(dt){const R=RAID;if(R.end>=0)return;R.t+=dt;const S=G2.S,me=R.
   if(R.arena)arenaRad(dt);
   for(const b of R.bs){if(b.die!=null)continue;b.age+=dt;if(b.in>0)b.in=Math.max(0,b.in-dt/.9);if(b.rad&&b.rad.ph!=='idle'){if(b.id==='cekim')b.spinA+=b.spinV*dt;continue;} /* a boss charging or firing its radiation holds still */
     if(b.id==='avci'){b.br=1+.1*Math.sin(b.age*TAU/5);let t=null,bd=1e9;for(const p of alive){const d=Math.hypot(p.x-b.x,p.y-b.y);if(d<bd){bd=d;t=p;}}if(t){const dx=t.x-b.x,dy=t.y-b.y,d=Math.hypot(dx,dy)||1,v=(55+4*R.nextB)*S*K;b.x+=dx/d*v*dt;b.y+=dy/d*v*dt;}}
-    if(b.id==='cekim'){b.spinA+=b.spinV*dt;b.x=W*.72+Math.sin(b.age*.22)*W*.16;b.y=H*.26+Math.cos(b.age*.29)*H*.08;}
-    if(b.id==='bomba'){b.flash=Math.max(0,b.flash-dt*1.5);b.x=W*.5+Math.sin(b.age*.45)*W*.32;b.y=H*.72+Math.sin(b.age*.9)*H*.07;b.cd-=dt*K;if(b.cd<=0&&b.in<=0){b.cd=R.arena?4:2.6;b.flash=.8;R.mines.push({x:b.x,y:b.y,t:R.arena?2:1.7});}}
-    if(b.id==='tara'){b.a+=(R.arena?.36:.55)*K*dt;if(R.arena){b.x=W*.5+Math.sin(b.age*.11)*W*.26;b.y=H*.47+Math.sin(b.age*.083+1.3)*H*.2;}else{b.x=W*.5+Math.sin(b.age*.2)*W*.08;b.y=H*.48+Math.cos(b.age*.17)*H*.05;}} /* 27 Oct (owner): in the arena the quasar spins and wanders slowly round the field */
+    if(b.id==='cekim'){b.spinA+=b.spinV*dt;b.x=W*.72+Math.sin(b.age*.22)*W*.16;b.y=H*.26+Math.cos(b.age*.29)*H*.08;b.px=b.x;b.py=b.y;}
+    if(b.id==='bomba'){b.flash=Math.max(0,b.flash-dt*1.5);b.x=W*.5+Math.sin(b.age*.45)*W*.32;b.y=H*.72+Math.sin(b.age*.9)*H*.07;b.px=b.x;b.py=b.y;b.cd-=dt*K;if(b.cd<=0&&b.in<=0){b.cd=R.arena?4:2.6;b.flash=.8;R.mines.push({x:b.x,y:b.y,t:R.arena?2:1.7});}}
+    if(b.id==='tara'){b.a+=(R.arena?.36:.55)*K*dt;if(R.arena){b.x=W*.5+Math.sin(b.age*.11)*W*.26;b.y=H*.47+Math.sin(b.age*.083+1.3)*H*.2;b.px=b.x;b.py=b.y;}else{b.x=W*.5+Math.sin(b.age*.2)*W*.08;b.y=H*.48+Math.cos(b.age*.17)*H*.05;}} /* 27 Oct (owner): in the arena the quasar spins and wanders slowly round the field */
     if(b.id==='bol'){const mv=o=>{o.x+=o.vx*dt*K;o.y+=o.vy*dt*K;if(o.x<o.r||o.x>W-o.r)o.vx*=-1;if(o.y<o.r||o.y>H-o.r-60)o.vy*=-1;o.x=clamp(o.x,o.r,W-o.r);o.y=clamp(o.y,o.r,H-o.r-60);};b.sp+=dt;
       if(!b.tw){mv(b);if(b.sp>7){b.sp=0;const s=Math.hypot(b.vx,b.vy)||1,v=150*S;b.tw=[{x:b.x,y:b.y,r:b.r*.7,vx:-b.vy/s*v,vy:b.vx/s*v},{x:b.x,y:b.y,r:b.r*.7,vx:b.vy/s*v,vy:-b.vx/s*v}];if(R.arena)liveCall(T('IŞINA DEĞME!'),'','#d8ff6a',1.2,true);v2Burst(b.x,b.y,26,'#d8ff6a',2,7,.7,2.2);v2Sfx('armor',{vol:.4,rate:.6});}}
       else{if(b.sp<=4.5)for(const h of b.tw)mv(h);else{const [a,q]=b.tw,mx=(a.x+q.x)/2,my=(a.y+q.y)/2;for(const h of b.tw){h.x+=(mx-h.x)*Math.min(1,3*dt);h.y+=(my-h.y)*Math.min(1,3*dt);}b.x=mx;b.y=my;if(Math.hypot(a.x-q.x,a.y-q.y)<6*S+2){b.tw=null;b.sp=0;}}}}}
   if(R.arena)for(const a of R.bs){if((a.id!=='avci'&&a.id!=='bol')||a.die!=null||a.tw)continue;for(const o of R.bs){if(o===a||o.id==='tara'||o.die!=null)continue;const dx=a.x-o.x,dy=a.y-o.y,d=Math.hypot(dx,dy)||1,m=raidBR(a)+raidBR(o)+30*S;if(d<m){a.x+=dx/d*(m-d);a.y+=dy/d*(m-d);}}} /* 27 Oct: no boss on top of another */
+  if(R.arena)arenaKeepOff(dt);
   for(let i=R.mines.length-1;i>=0;i--){const m=R.mines[i];m.t-=dt;if(m.t<=0){R.mines.splice(i,1);R.booms.push({x:m.x,y:m.y,t:0,R:(R.arena?95*RAIDK.zoom/ARENA_ZOOM:120)*S});v2Sfx('boom',{vol:.35,rate:1.2});shake=Math.max(shake,3);}}
   for(let i=R.booms.length-1;i>=0;i--){const e=R.booms[i];e.t+=dt;if(e.t>.55)R.booms.splice(i,1);}
   const C=raidCircles(),tb=R.bs.find(b=>b.id==='tara'&&b.in<=.4),arms=tb?raidArms(tb):[],gb=R.bs.find(b=>b.id==='cekim'&&b.die==null);if(R.arena)for(const b of R.bs)if(b.id==='bol'&&b.tw&&b.die==null&&b.sp>.5){const [a,q]=b.tw,mx=(a.x+q.x)/2,my=(a.y+q.y)/2+Math.sin(clock*3)*a.r*.25;arms.push([a.x,a.y,mx,my,'isin'],[mx,my,q.x,q.y,'isin']);} // 27 Oct (owner): the thread between the halves breaks a shell too
@@ -8674,7 +8675,7 @@ function raidStep(dt){const R=RAID;if(R.end>=0)return;R.t+=dt;const S=G2.S,me=R.
   if(gb&&gb.in<=0&&me.alive){const dx=gb.x-hX,dy=gb.y-hY,d=Math.hypot(dx,dy)||1;if(d<gb.pull){const f=(R.arena?75:110)*S*(1-d/gb.pull)*dt,ux=dx/d*f,uy=dy/d*f;G2.tx+=ux;G2.ty+=uy;if(DRAG.id!==null){DRAG.ax+=ux;DRAG.ay+=uy;}}}
   // the team
   if(R.arena&&ARENA_SOS.includes('s'))arenaSosBeep(dt);
-  for(const p of R.ps){if(p.out)continue;p.inv=Math.max(0,p.inv-dt);
+  for(const p of R.ps){if(p.out)continue;p.inv=Math.max(0,p.inv-dt);if(p.blk>0)p.blk-=dt;
     if(!p.alive){p.ghost-=dt;const rs=R.ps.find(q=>q.alive&&Math.hypot(q.x-p.x,q.y-p.y)<(q.me?G2.R:q.rr*S)+34*S+8);if(rs){p.rv+=dt;if(p.rv>=RAIDK.rev)raidUp(p,rs);}else p.rv=Math.max(0,p.rv-dt*.5);
       if(!p.alive&&p.ghost<=0){p.out=true;liveCall(p.me?T('ELENDİN'):p.n+' '+T('ELENDİ'),'','#9aa2b6',1.2,true);for(const q of R.ps)if(q.tg===p)q.tg=null;}continue;}
     p.surv+=dt;
@@ -8776,7 +8777,7 @@ function raidDraw(gl){const R=RAID,S=G2.S,t=clock;ctx.save();RAID_LAB.length=0;i
     ctx.fillStyle='#1c1f28';ctx.beginPath();ctx.arc(m.x,m.y,10*S+3,0,TAU);ctx.fill();ctx.fillStyle=Math.floor(t*(4+k*10))%2?'#ff4a3a':'#5a1a14';ctx.beginPath();ctx.arc(m.x,m.y,4*S+2,0,TAU);ctx.fill();ctx.strokeStyle='#ffb36a';ctx.lineWidth=2;ctx.beginPath();ctx.arc(m.x,m.y,14*S+4,-Math.PI/2,-Math.PI/2+TAU*k);ctx.stroke();}
   ctx.save();ctx.globalCompositeOperation='lighter';for(const e of R.booms){const k=e.t/.55,rr=e.R*Math.min(1,e.t/.25),g=ctx.createRadialGradient(e.x,e.y,0,e.x,e.y,rr+1);g.addColorStop(0,`rgba(255,240,200,${.7*(1-k)})`);g.addColorStop(.6,`rgba(255,150,50,${.4*(1-k)})`);g.addColorStop(1,'rgba(255,80,20,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(e.x,e.y,rr+1,0,TAU);ctx.fill();ctx.strokeStyle=`rgba(255,220,150,${1-k})`;ctx.lineWidth=4;ctx.stroke();}ctx.restore();
   for(const p of R.ps){if(p.out)continue;const pr=p.me?G2.R:p.rr*S;
-    if(R.arena&&p.alive&&R.t<ARENA_SAFE&&Math.floor(t*6)%2===0){const x=p.me?hX:p.x,y=p.me?hY:p.y;ctx.save();ctx.strokeStyle=`rgba(${p.col},.95)`;ctx.shadowColor=`rgb(${p.col})`;ctx.shadowBlur=14;ctx.lineWidth=4;ctx.beginPath();ctx.arc(x,y,pr*1.8+6,0,TAU);ctx.stroke();ctx.restore();} // the 3 s start shield
+    if(R.arena&&p.alive&&p.blk>0&&Math.floor(t*6)%2===0){const x=p.me?hX:p.x,y=p.me?hY:p.y;ctx.save();ctx.strokeStyle=`rgba(${p.col},.95)`;ctx.shadowColor=`rgb(${p.col})`;ctx.shadowBlur=14;ctx.lineWidth=4;ctx.beginPath();ctx.arc(x,y,pr*1.8+6,0,TAU);ctx.stroke();ctx.restore();} // the 3 s shield, at the start and after a rescue
     if(!p.alive){ctx.save();ctx.globalAlpha=.6+.25*Math.sin(t*6);ctx.strokeStyle=`rgba(${p.col},.95)`;ctx.lineWidth=2.5;ctx.setLineDash([5,5]);ctx.beginPath();ctx.arc(p.x,p.y,pr*1.5,0,TAU);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=`rgba(${p.col},.12)`;ctx.fill();ctx.globalAlpha=1;
       ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,pr*2.1,-Math.PI/2,-Math.PI/2+TAU*clamp(p.ghost/RAIDK.ghost,0,1));ctx.stroke();
       if(p.rv>0){ctx.strokeStyle='#7dff8a';ctx.lineWidth=5;ctx.beginPath();ctx.arc(p.x,p.y,pr*2.6,-Math.PI/2,-Math.PI/2+TAU*clamp(p.rv/RAIDK.rev,0,1));ctx.stroke();}
@@ -8828,6 +8829,13 @@ function arenaRescFly(p){const R=RAID;if(!DEV&&arenaLeft()<=0)return;R.stOn=1;ra
   const e=document.createElement('div');e.className='arPop';e.textContent='+'+ARENA_RESC;e.style.left=x+'px';e.style.top=y+'px';document.body.appendChild(e);
   sfx('achieve',{vol:.5});vib([20,40,30]);later(()=>{flyReward(e,{stars:ARENA_RESC},()=>{R.stF=(R.stF||0)+ARENA_RESC;raidHud();});},250);later(()=>e.remove(),1400);} /* owner chose C: a small +10, the big stars carry the eye to the count */
 const ARENA_SAFE=3;
+// 28 Oct (owner): no boss comes over a fallen hole (its SOS): a boss that roams freely is pushed back; one on a set path bends off it
+// for as long as the hole waits and then slides back onto its path.
+function arenaKeepOff(dt){const R=RAID,S=G2.S,dn=R.ps.filter(p=>!p.alive&&!p.out);
+  for(const b of R.bs){if(b.die!=null||b.in>0)continue;const path=b.px!=null&&b.id!=='avci'&&b.id!=='bol',bx=path?b.px:b.x,by=path?b.py:b.y;let tx=0,ty=0;
+    for(const p of dn){const pr=p.me?G2.R:p.rr*S,m=raidBR(b)+pr*2.6+40*S,dx=bx+(path?b.ox||0:0)-p.x,dy=by+(path?b.oy||0:0)-p.y,d=Math.hypot(dx,dy)||1;
+      if(path){const ex=bx-p.x,ey=by-p.y,e=Math.hypot(ex,ey)||1;if(e<m){tx+=ex/e*(m-e);ty+=ey/e*(m-e);}}else if(d<m){b.x+=dx/d*(m-d);b.y+=dy/d*(m-d);if(b.tw)for(const h of b.tw){const hx=h.x-p.x,hy=h.y-p.y,hd=Math.hypot(hx,hy)||1;if(hd<m){h.x+=hx/hd*(m-hd);h.y+=hy/hd*(m-hd);}}}}
+    if(path){const k=Math.min(1,dt*(tx||ty?4:1.2));b.ox=(b.ox||0)+(tx-(b.ox||0))*k;b.oy=(b.oy||0)+(ty-(b.oy||0))*k;b.x=bx+b.ox;b.y=by+b.oy;}}}
 // 28 Oct (owner): the Energy Star, rare: from 30 s about every 45 s, one at a time, gone after 15 s. Whoever swallows it (a pilot too)
 // drains every boss at once for 5 s wherever they are, twice as fast as standing alone in a ring; a split Bölünen still can't be drained.
 const ARENA_SIF={from:30,every:45,life:15,dur:5,k:2};
@@ -8985,7 +8993,7 @@ function arenaPlay(){if(!DEV)return;fmClose();hideModals();const o=document.crea
 arenaPlay.n=0;const AV2=['🔭','🎧','🪐'];
 function arenaSetup(){const R=RAID;R.arena=1;G2.live=1;$('badge').textContent='🌌 '+T('KOZMİK ARENA');
   ARENA_SEATS.forEach((p,i)=>{if(R.ps[i+1])R.ps[i+1].n=p.n;});
-  document.body.classList.add('arena');R.sc0=totalScore;for(const p of R.ps){p.sc=0;p.inv=ARENA_SAFE;}G2.immT=Math.max(G2.immT||0,ARENA_SAFE); /* 28 Oct (owner): everyone starts untouchable for 3 s, rings blinking */R.tut=!arenaSv().tut&&!arenaAuto();
+  document.body.classList.add('arena');R.sc0=totalScore;for(const p of R.ps){p.sc=0;p.inv=ARENA_SAFE;p.blk=ARENA_SAFE;}G2.immT=Math.max(G2.immT||0,ARENA_SAFE); /* 28 Oct (owner): everyone starts untouchable for 3 s, rings blinking */R.tut=!arenaSv().tut&&!arenaAuto();
   {const sty=[...ARENA_STY].sort(()=>Math.random()-.5);R.ps.slice(1).forEach((p,i)=>p.sty=sty[i%sty.length]);} // 28 Oct: three ways of playing, so the pilots don't all move alike // 27 Oct (owner): everyone with their own stock, Lab and avatar; no kit is handed out
   later(()=>{if(raidOn())liveCall(T('HALKADA DUR'),T('BOSSA DOKUNMA'),'#c9a8ff',2.2,true);},350);}
 function arenaResult(){const R=RAID,team=R.team||0,me=R.ps[0],paid=arenaLeft()>0,tier=paid?arenaTier(team):null;if(paid){arenaSv().n++;}const won=arenaCupsAdd(R.kt||{});saveG();sfx('levelup',{vol:.7,rev:.4});fmClose();
