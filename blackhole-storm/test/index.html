@@ -678,6 +678,13 @@ body.v2 #boost2 .hb2 .tapH svg{width:50px;height:36px;display:block;}
 body.v2 #boost2 .hb2 .tapS{position:absolute;left:50%;top:50%;width:60px;height:60px;margin:-30px 0 0 -30px;pointer-events:none;z-index:3;animation:tapS .8s ease-out infinite;}
 @keyframes tapS{0%,30%{opacity:0;transform:scale(.6);}42%{opacity:1;transform:scale(1);}70%,100%{opacity:0;transform:scale(1.3);}}
 body.v2 #boost2 .hb2 .tapR{position:absolute;inset:-5px;border-radius:20px;border:3px solid var(--ndc,#fff);pointer-events:none;opacity:0;animation:tapR .8s ease-out infinite;}
+#vxHand{position:fixed;z-index:40;width:0;height:0;pointer-events:none;} /* 1.6.0+: the hand that taps for the Vortex, by the hole */
+#vxHand .vxH{position:absolute;left:-6px;top:-4px;width:58px;height:42px;transform-origin:2px 4px;animation:vxTap 1.3s ease-in-out infinite;filter:drop-shadow(0 0 6px rgba(255,200,80,.85)) drop-shadow(0 2px 2px rgba(0,0,0,.6));}
+#vxHand .vxH svg{width:58px;height:42px;display:block;transform:scaleX(-1) rotate(-38deg);}
+#vxHand .vxR{position:absolute;left:-22px;top:-22px;width:44px;height:44px;border-radius:50%;border:3px solid #ffb35c;opacity:0;animation:vxRip 1.3s ease-out infinite;}
+@keyframes vxTap{0%,100%{transform:translate(16px,14px)}35%{transform:translate(16px,14px)}55%{transform:translate(0,0) scale(.94)}70%{transform:translate(2px,2px)}}
+@keyframes vxRip{0%,50%{transform:scale(.4);opacity:0}56%{opacity:.95}100%{transform:scale(1.8);opacity:0}}
+body.v2 #rage2.vxr .bar{animation:vxBar .45s ease-in-out infinite alternate;border-color:#ff8a4c;}@keyframes vxBar{from{box-shadow:0 0 0 rgba(255,138,76,0)}to{box-shadow:0 0 12px rgba(255,138,76,.95)}}
 @keyframes tapR{0%,36%{transform:scale(.8);opacity:0}42%{opacity:.95}100%{transform:scale(1.55);opacity:0}}
 /* the call to act: by the hole, three beats, then it flies into its button (a trail of fading copies) and the button gulps it */
 .ndFly{position:fixed;z-index:60;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;font:900 21px 'IBM Plex Sans Condensed',sans-serif;letter-spacing:1.5px;
@@ -2337,13 +2344,13 @@ const TAU=Math.PI*2;
 const DEV=/[?&]dev\b/.test(location.search),DEV_LV=1000;
 /* RELEASE GATE: updates go out in steps during the closed test. REL is the release this build ships (1.4.6 -> 6, 1.4.7 -> 7 ...);
    a feature waiting for a later release checks rel(n). The developer link always sees everything, so it previews what is coming. */
-const REL=(()=>{let r=14;try{if(/\/test\//.test(location.pathname)){const q=+new URLSearchParams(location.search).get('rel');if(q>r&&q<=r+2)r=q;}}catch(e){}return r;})(),rel=n=>DEV||REL>=n; /* 29 Oct: the tester page can try the next release with the live server: test/?rel=15 (no ?dev) */
+const REL=(()=>{let r=16;try{if(/\/test\//.test(location.pathname)){const q=+new URLSearchParams(location.search).get('rel');if(q>r&&q<=r+2)r=q;}}catch(e){}return r;})(),rel=n=>DEV||REL>=n; /* 29 Oct: the tester page can try the next release with the live server: test/?rel=15 (no ?dev) */
 // 24 Oct preview: a calmer level 1 (no cards, slow motion for the meteor, a glowing Vortex button, notes held to the end). ?dev&ftue=0 shows the old one
 const FTUE2=()=>DEV?new URLSearchParams(location.search).get('ftue')!=='0':REL>=11; // 1.5.5 (24 Oct, owner approved): the new first level for everyone
 // The Android app (Capacitor) runs this same page from inside the app; native features go through its plugins.
 const NATIVE=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()),APP_URL='https://liaslabs.github.io/blackhole-storm/';
 const CAP=n=>NATIVE&&window.Capacitor.Plugins?window.Capacitor.Plugins[n]||null:null;
-const BUILD="bhs-v139",APPVER="test";
+const BUILD="bhs-v141",APPVER="test";
 // 22 Oct: canvas roundRect arrived in Chrome 99; on an older Android WebView the first level threw on every frame and froze
 if(window.CanvasRenderingContext2D&&!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
   r=Math.max(0,Math.min(+(Array.isArray(r)?r[0]:r)||0,Math.abs(w)/2,Math.abs(h)/2));
@@ -6134,7 +6141,7 @@ function v2Start(mode){if(typeof lagMark==='function')lagMark('st');if(mode!=='s
   if(mode==='sprint'&&FMRUN)fmSetup();else if(mode==='sprint'&&RAID)raidSetup();else{if($('rage2'))$('rage2').style.visibility='';if($('pb'))$('pb').style.display='';} /* last, so that nothing above resets the mission's kit, mix or Golden Arcs */
   gState='playing';lastT=performance.now();updateUI(); /* 18 Oct: the hearts are drawn again here, after the level set its lives; until now they kept the last level's count (one heart) until the first hit */
 }
-function v2Stop(){if(RAID)raidStop();G2.on=false;v2TipFlowEnd();document.body.classList.remove('v2');DRAG.id=null;curR=BASE_R;tgtR=BASE_R;}
+function v2Stop(){if(RAID)raidStop();G2.on=false;v2VxHand(false);v2TipFlowEnd();document.body.classList.remove('v2');DRAG.id=null;curR=BASE_R;tgtR=BASE_R;}
 
 // ── input ─────────────────────────────────────────────
 function v2Pt(e){const r=$('fx').getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top];}
@@ -6285,7 +6292,7 @@ function v2RunScript(dt){
   if(G2.st>=42&&!G2.firstRage&&G2.rage<100&&G2.rageT<=0&&!G2.ready)G2.rage=Math.min(100,G2.rage+dt*40); // the first Rage always arrives, once
   if(G2.ready&&!G2.tRdy){G2.tRdy=1;v2TutEv('rdy');}
   if(FTUE2()&&G2.ready&&!G2.rageHint){G2.rageHint=1;$('rage2')&&$('rage2').classList.add('hl');v2Call(T('DOKUN → VORTEX'),'','#ffb35c',2.6,true);} /* FTUE2: the button glows instead of a card */
-  if(G2.ready&&G2.readyT>(FTUE2()?3:5)){$('rage2')&&$('rage2').classList.remove('hl');v2TutEv('rauto');v2RageGo();} // tutorial only: nobody leaves level 1 without seeing Rage
+  if(G2.ready&&G2.readyT>(rel(16)?8:FTUE2()?3:5)){$('rage2')&&$('rage2').classList.remove('hl');v2TutEv('rauto');G2.vxAuto=1;v2RageGo();G2.vxAuto=0;} // tutorial only: nobody leaves level 1 without seeing Rage
   if(rel(11)&&G2.st>=30&&!G2.ev2){G2.ev2=1;evOnce('tut2');} // halfway through the tutorial
   if(G2.si>=E.length&&G2.st>=(E.length?E[E.length-1][0]:0)+2){G2.script=null;if(rel(11)){evOnce('tut3');natMark('tutorial over');}} // the tutorial script is over: normal spawning takes it from here
 }
@@ -6461,7 +6468,7 @@ function v2Update(dt){
   if(G2.novaT>0){G2.novaT-=dt;if(G2.novaT<=0){G2.novaT=0;v2Call('NOVA BİTTİ','','#8fe9ff',.7);}}
   if(G2.overT>0){G2.overT-=dt;if(G2.overT<=0){G2.rr=V2K.r0+(G2.cap-V2K.r0)*.6;v2Call('ÇÖKÜŞ','KARA DELİK KÜÇÜLÜYOR','#b9a8ff',1.3);sfx('slow',{vol:.6,rate:.6});v2Burst(hX,hY,26,'#b9a8ff',2,6,.7);}}
   if(G2.rageT>0){const was=G2.rageT;G2.rageT-=dt;if(G2.rageT>0&&Math.ceil(was)!==Math.ceil(G2.rageT)&&G2.rageT<3){v2Call(String(Math.ceil(G2.rageT)),'VORTEX','#ff8a4c',.5);sfx('tickHi',{vol:.5,rate:.9});}if(G2.rageT<=0){v2Call('VORTEX BİTTİ','','#ffb35c',1);sfx('slow',{vol:.5,rate:.7});v2Burst(hX,hY,26,'#ff8a4c',1.5,5,.6);}G2.rage=Math.max(0,Math.min(100,G2.rageT/V2K.rage.dur*100));heat=Math.max(heat,.55);if(G2.rageT<=0){G2.rage=0;G2.rageT=0;SND.setDrone(.14,650);}}
-  if(G2.ready)G2.readyT+=dt;if(G2.tipCD>0)G2.tipCD-=dt;if(G2.magT>0)G2.magT-=dt;if(G2.pairT>0)G2.pairT-=dt;
+  if(G2.ready)G2.readyT+=dt;if(rel(16)){const on=G2.ready&&gState==='playing'&&!G2.live&&!REPLAY;$('rage2')&&$('rage2').classList.toggle('vxr',on);v2VxHand(on&&(TIPS.vxSelf|0)<3&&G2.readyT>.6&&G2.readyT%4.5<2.6);}if(G2.tipCD>0)G2.tipCD-=dt;if(G2.magT>0)G2.magT-=dt;if(G2.pairT>0)G2.pairT-=dt;
   v2Worms(dt);
   if(G2.shT>0){G2.shT-=dt;if(G2.shT<1.5&&G2.shT>0){const k=Math.ceil(G2.shT*2);if(k!==G2.shTick){G2.shTick=k;v2Sfx('tickHi',{vol:.5,rate:1.3});vib(8);}}
     if(G2.shT<=0){G2.shT=0;v2Call('KALKAN BİTTİ','','#ffb35c',.8);v2Sfx('armor',{vol:.35,rate:.6});v2GoldEarn('KALKANDAN');}} // a spent shield leaves a gold shell behind
@@ -7268,7 +7275,7 @@ function v2Revive(){ // one continue per run (spec §42)
   for(const o of G2.objs)if(o.k==='meteor'&&Math.hypot(o.x-hX,o.y-hY)<sp2(260))o.st='dead';
 }
 function v2RageGo(){
-  if(!G2.ready)return;if(G2.script&&G2.readyT<=(FTUE2()?3:5))v2TutEv('rtap');v2Ach.rage++;G2.firstRage=true;G2.ready=false;G2.readyT=0;G2.rageT=V2K.rage.dur+.25*labEffLv('rage')+avPk('rage');avPkFx('rage',G2.rageT);avPkFx('rageR',G2.rageT);G2.rage=100;G2.swarm=16;G2.swarmT=.15;
+  if(!G2.ready)return;if(G2.script&&G2.readyT<=(rel(16)?8:FTUE2()?3:5))v2TutEv('rtap');if(rel(16)&&!G2.vxAuto){TIPS.vxSelf=(TIPS.vxSelf|0)+1;saveSoon();}v2VxHand(false);$('rage2')&&$('rage2').classList.remove('vxr');v2Ach.rage++;G2.firstRage=true;G2.ready=false;G2.readyT=0;G2.rageT=V2K.rage.dur+.25*labEffLv('rage')+avPk('rage');avPkFx('rage',G2.rageT);avPkFx('rageR',G2.rageT);G2.rage=100;G2.swarm=16;G2.swarmT=.15;
   shake=Math.max(shake,10);flash=Math.max(flash,.8);shock=1;heat=.6;
   v2Call('VORTEX BAŞLADI!','','#ff6a3d',1.8,true);sfx('powerup',{vol:.8,rate:.7});sfx('magnet',{vol:.6,rate:.7});sfx('boom',{vol:.5,rate:.5});SND.setDrone(.24,420);vib([40,30,90]);
   v2Burst(hX,hY,40,'#ff8a4c',2,8,.8,2.2);dmEvent('rescue',1);
@@ -7392,6 +7399,17 @@ function v2Nudge(id,txt,col){if(REPLAY||G2.live)return; /* 26 Oct (owner): a cal
     L.forEach((o,n)=>{const ang=Math.atan2(o.dy,o.dx)*180/Math.PI,t=(k,sx,sy)=>`translate(${o.dx*k}px,${o.dy*k}px) rotate(${ang}deg) scale(${sx},${sy}) rotate(${-ang}deg)`,d=n*55;end=Math.max(end,d+720);
       o.l.animate([{transform:t(0,1,1),opacity:1},{transform:t(.12,1.3,.75),opacity:1,offset:.3},{transform:t(.7,2.4,.3),opacity:.95,offset:.72},{transform:t(.93,1.4,.12),opacity:.7,offset:.9},{transform:t(1,.2,.04),opacity:0}],{duration:720,delay:d,easing:'cubic-bezier(.5,0,.8,.5)',fill:'forwards'});}); /* stays visible on the way: stretched, then a thread at the mouth */
     setTimeout(()=>{f.remove();e.classList.remove('suck');e.classList.add('gulp');setTimeout(()=>e.classList.remove('gulp'),260);v2NudgeBeat(e);},end+20);},1250);}
+// 1.6.0+ (30 Oct, owner): new players let the Vortex go off by itself (8 % tapped it in the tutorial). When it is full: an orange halo
+// and rings round the hole, the bar flashes, the screen's edges glow once; and until the player has fired it 3 times himself, a hand
+// by the hole lifts and taps (the same gold hand as the power buttons), for 2.6 s in every 4.5 s. The tutorial waits 8 s before firing it.
+function v2DrawVxReady(){if(!rel(16)||!G2.ready||G2.live)return;const t=G2.readyT,R=G2.R||30;ctx.save();ctx.globalCompositeOperation='lighter';
+  const g=ctx.createRadialGradient(hX,hY,R*.9,hX,hY,R*2.2);g.addColorStop(0,`rgba(255,138,76,${.35+.2*Math.sin(t*7)})`);g.addColorStop(1,'rgba(255,138,76,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(hX,hY,R*2.2,0,TAU);ctx.fill();
+  for(let i=0;i<3;i++){const ph=(t*.9+i/3)%1;ctx.strokeStyle=`rgba(255,160,90,${(1-ph)*.7})`;ctx.lineWidth=3*(1-ph)+1;ctx.beginPath();ctx.arc(hX,hY,R*(1.15+ph*1.7),0,TAU);ctx.stroke();}
+  if(t<.9){const a=(1-t/.9)*.3,e=Math.min(W,H)*.14;for(const [x0,y0,x1,y1] of [[0,0,0,e],[0,H,0,H-e],[0,0,e,0],[W,0,W-e,0]]){const q=ctx.createLinearGradient(x0,y0,x1,y1);q.addColorStop(0,`rgba(255,120,60,${a})`);q.addColorStop(1,'rgba(255,120,60,0)');ctx.fillStyle=q;ctx.fillRect(0,0,W,H);}}
+  ctx.restore();}
+function v2VxHand(on){let e=$('vxHand');if(!on){if(e&&!e.hidden)e.hidden=true;return;}
+  if(!e){e=document.createElement('div');e.id='vxHand';e.innerHTML='<em class="vxR"></em><em class="vxH">'+V2_HAND+'</em>';document.body.appendChild(e);}
+  e.hidden=false;const R=G2.R||30;e.style.left=Math.round(hX+R*.55)+'px';e.style.top=Math.round(hY+R*.55)+'px';}
 const V2_ND={shTop:'KALKANA DOKUN',tmTop:'KRİSTALE DOKUN',diaTop:'SÜPERNOVAYA DOKUN',hkTop:"HAWKING'E DOKUN"}; // the call to act for each button
 function v2NudgeBeat(e){e.classList.add('nd');if(!e.querySelector('.tapH'))e.insertAdjacentHTML('beforeend','<em class="tapR"></em><em class="tapS">'+V2_SPARK+'</em><em class="tapH">'+V2_HAND+'</em>');
   clearTimeout(e._nt);e._nt=setTimeout(v2NudgeOff,2800,e);}
@@ -7496,7 +7514,8 @@ function v2Tip(id,tg){
   if(G2.live||TIPS[id]||G2.tip||gState!=='playing'||G2.ending||G2.tipCD>0||(G2.script&&!G2.touched)||RAID&&gameMode==='sprint')return false; /* no cards during the raid */
   if(FTUE2()&&G2.script&&(id==='meteor'||id==='rage'||id==='arcs'))return false; /* FTUE2: level 1 shows these by doing; the cards come on the first meteor and Vortex after it */
   if(rel(11)&&SET.tips===false&&!G2.script&&!G2.tut)return false; /* 21 Oct: tips turned off in Settings (the tutorial still teaches) */
-  if(rel(15)&&id.startsWith('ev_')){TIPS[id]=1;saveSoon();return true;} /* 1.6.0 (29 Oct, owner): no card and no strip for an event: its big call says it, with a few words under it (v2EvSub) */
+  if(rel(15)&&id.startsWith('ev_')){TIPS[id]=1;saveSoon();return true;}
+  if(rel(16)&&id==='rage'){TIPS[id]=1;saveSoon();return true;} /* 30 Oct (owner): no Vortex card; the halo and the tapping hand say it without stopping the game */ /* 1.6.0 (29 Oct, owner): no card and no strip for an event: its big call says it, with a few words under it (v2EvSub) */
   if(TIP_SOFT.has(id)&&!G2.tut&&(G2.tipGap>0||G2.tipN>=2||G2.tipF))return false;
   if(TIP_SOFT.has(id)&&v2TipFlowOn())return v2TipFlow(id,tg);
   v2TipFlowEnd();
@@ -7826,7 +7845,7 @@ function v2Frame(dt){
   for(const o of G2.objs){if(o.cell!==undefined&&gl){if(o.k==='gold'&&o.st==='in')v2DrawGold(o);else if(o.k==='mpair'&&o.st==='in')v2DrawSat(o);else if((o.k==='split'||o.k==='half')&&o.st==='in')v2DrawCracks(o);if(o.sh&&o.st==='in')v2DrawShiny(o,o.r);continue;}v2DrawObj(o,gl);}
   if(G2.boss)v2DrawBoss(G2.boss,gl);
   v2DrawRival();if(RAID)raidDraw(gl);if(FMRUN&&FMRUN.m.x)fmxDraw();if(typeof KP!=='undefined'&&KP.st==='play')kpDraw();if(rel(10))v2DrawBits(dt);
-  v2DrawMarks();v2DrawEv();v2DrawSpec();v2DrawJet();v2DrawHawk();v2DrawWorm();v2DrawHor();
+  v2DrawMarks();v2DrawVxReady();v2DrawEv();v2DrawSpec();v2DrawJet();v2DrawHawk();v2DrawWorm();v2DrawHor();
   ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';
   for(const p of G2.parts){ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.strokeStyle=p.c;ctx.lineWidth=p.sz;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*2,p.y-p.vy*2);ctx.stroke();}
   for(let i=sparks.length-1;i>=0;i--){if(!sparks[i].update(dt,f))sparks.splice(i,1);else sparks[i].draw();}
@@ -8113,6 +8132,7 @@ function v2DrawMarks(){ // what can be eaten: pull lines and too-big warnings
   ctx.restore();
 }
 function v2DrawLinks(){ // bomb tether (turns red as the drag pulls it loose) and helper beams
+  {const h0=G2.hold;if(h0&&(h0.st==='dead'||h0.st==='eaten'||!G2.objs.includes(h0))){G2.hold=null;h0.orb=null;}} /* 29 Oct (owner): a held bomb taken away another way (a teammate, the arena's sync) left its tether drawn to nowhere */
   const b=G2.hold;if(b&&b.orb){const t=Math.min(1,b.orb.lag);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.5+.4*t;
     ctx.strokeStyle=`rgb(255,${200-150*t|0},${80-60*t|0})`;ctx.lineWidth=2+3*t;ctx.setLineDash([6,5]);ctx.lineDashOffset=clock*40;ctx.beginPath();ctx.moveTo(hX,hY);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.restore();}
   if(G2.beams.length){ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';
@@ -9176,7 +9196,11 @@ function fmxPlay(id){const m=FMX_DEV.find(x=>x.id===id)||BHS_FMIS.byId(id);if(!(
 // 25 Oct (owner): the three new missions come as BONUS LEVELS in the run: offered on the level card after levels 25, 45, 65… (every 20),
 // one at a time in turn, on the mission's own kit (the player's stock is never spent), losing costs no heart; a medal pays stars and diamonds
 const BONUS={from:25,every:20,rw:[null,{stars:100},{stars:200,gems:5},{stars:300,gems:10}]};
-const bonusMis=l=>FMX[Math.floor((l-BONUS.from)/BONUS.every)%FMX.length];
+// 1.6.0 (30 Oct, owner): from level 7, every 10 levels (17, 27…), and every mission of the fleet's day takes its turn, the classic six first
+const BONUS2={from:7,every:10,ids:['combo','garc','belt','hunt','eclipse','anti','fast','dstar','neu','mirror']};
+if(rel(15)){BONUS.from=BONUS2.from;BONUS.every=BONUS2.every;}
+const BONUS_L=()=>rel(15)?BONUS2.ids.map(id=>BHS_FMIS.byId(id)).filter(m=>m&&!m.off):FMX;
+const bonusMis=l=>{const L=BONUS_L();return L[Math.floor((l-BONUS.from)/BONUS.every)%L.length];};
 const bonusDue=l=>rel(11)&&gameMode==='classic'&&!HMODE&&!REPLAY&&!EXPRUN&&l>=BONUS.from&&(l-BONUS.from)%BONUS.every===0&&(SHOP.bonus|0)<l;
 function bonusPlay(l){const m=bonusMis(l);if(!m)return;SHOP.bonus=l;saveG();fmClose();hideModals();startSprint(daySeed('bonus'+l),{fm:m,fmDay:'bonus'});}
 function bonusEnd(R){const m=R.m,v=fmVal(),run=BHS_FMIS.tier(m,v),g=BONUS.rw[run];FMRUN=null;sfx(run>0?'levelup':'gameover',{vol:.8,rev:.4});
