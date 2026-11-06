@@ -11,8 +11,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="./ui/icon-192.png" />
   <title>Unzombie</title>
-  <script type="module" crossorigin src="./assets/index-DRYN2WJi.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-G1pyKu14.css">
+  <script type="module" crossorigin src="./assets/index-DMa4Fqgl.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DxBSSRww.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -22,6 +22,14 @@
     <div class="pill"><img src="./ui/bolt.png" alt="" /><span id="hud-score">0</span></div>
     <div class="pill" id="hud-fence"><img src="./ui/heart.png" alt="" /><span class="tower-bar"><span id="tower-fill"></span></span></div>
   </div>
+  <button id="btn-pause" aria-label="Durdur"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1.5" fill="#fff"/><rect x="14" y="4" width="5" height="16" rx="1.5" fill="#fff"/></svg></button>
+  <div id="struggle" class="hidden">
+    <div class="str-title">ZOMBİ LYDIA'YI YAKALADI!</div>
+    <div class="str-tap">DOKUN! DOKUN!</div>
+    <div class="str-bar"><span id="struggle-fill"></span></div>
+    <div class="str-time"><span id="struggle-time"></span></div>
+  </div>
+  <svg id="pull" aria-hidden="true"><circle id="pull-ring" r="34" /><circle id="pull-arc" r="34" /><line id="pull-line" /><circle id="pull-dot" r="9" /></svg>
   <div id="banner"></div>
   <div id="combo"></div>
   <div id="hint" class="hidden"><div class="finger"></div><span>Geri çek, bırak!</span></div>
@@ -35,7 +43,7 @@
     <p class="sub">Öldürme. İyileştir.</p>
     <p>Parmağını geriye sürükle, bırak: panzehir şırıngası fırlar.<br />Zombiler kuleye tırmanmadan onları insana döndür.</p>
     <button id="btn-start">Başla</button>
-    <p class="tiny">Prototip 0.3 · Gri Saat</p>
+    <p class="tiny">Prototip 0.4 · Gri Saat</p>
   </div>
   <div id="screen-map" class="screen hidden">
     <h2 id="map-title">Akşam Caddesi</h2>
@@ -67,6 +75,21 @@
     <div id="over-goals" class="goals"></div>
     <div class="row"><button id="btn-continue">Devam et</button><button id="btn-retry" class="orange">Bir daha</button></div>
     <button id="btn-over-map" class="small">Harita</button>
+  </div>
+  <div id="screen-pause" class="screen hidden">
+    <h1>DURAKLADI</h1>
+    <div id="pause-goals" class="goals"></div>
+    <div class="row"><button id="btn-resume">Devam</button><button id="btn-restart" class="orange small">Yeniden başla</button></div>
+    <div class="toggles">
+      <label><input type="checkbox" data-set="sound" /> Ses efektleri</label>
+      <label><input type="checkbox" data-set="music" /> Müzik</label>
+      <label><input type="checkbox" data-set="haptics" /> Titreşim</label>
+      <label><input type="checkbox" data-set="shake" /> Ekran sarsıntısı</label>
+      <label><input type="checkbox" data-set="left" /> Solak düzen</label>
+      <label><input type="checkbox" data-set="holdAssist" /> Boğuşmada basılı tut</label>
+      <label><input type="checkbox" data-set="hints" /> İpuçları</label>
+    </div>
+    <button id="btn-pause-map" class="small">Haritaya dön</button>
   </div>
 </body>
 </html>
