@@ -11,8 +11,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="./ui/icon-192.png" />
   <title>Unzombie</title>
-  <script type="module" crossorigin src="./assets/index-CsLG5z4R.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DfszBv8u.css">
+  <script type="module" crossorigin src="./assets/index-DfhL7dej.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-H4tUckzJ.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -22,76 +22,78 @@
     <div class="pill"><img src="./ui/bolt.png" alt="" /><span id="hud-score">0</span></div>
     <div class="pill" id="hud-fence"><img src="./ui/heart.png" alt="" /><span class="tower-bar"><span id="tower-fill"></span></span></div>
   </div>
-  <button id="btn-pause" aria-label="Durdur"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1.5" fill="#fff"/><rect x="14" y="4" width="5" height="16" rx="1.5" fill="#fff"/></svg></button>
+  <button id="btn-pause" aria-label="Durdur" data-t-label><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1.5" fill="#fff"/><rect x="14" y="4" width="5" height="16" rx="1.5" fill="#fff"/></svg></button>
   <div id="struggle" class="hidden">
-    <div class="str-title">ZOMBİ LYDIA'YI YAKALADI!</div>
-    <div class="str-tap">DOKUN! DOKUN!</div>
+    <div class="str-title" data-t>ZOMBİ LYDIA'YI YAKALADI!</div>
+    <div class="str-tap" data-t>DOKUN! DOKUN!</div>
     <div class="str-bar"><span id="struggle-fill"></span></div>
     <div class="str-time"><span id="struggle-time"></span></div>
   </div>
-  <button id="btn-rapid" aria-label="Seri fırlatıcı"><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><g fill="#8ff6ff" stroke="#14213a" stroke-width="2.5"><rect x="6" y="12" width="26" height="7" rx="3"/><rect x="10" y="22" width="26" height="7" rx="3"/><rect x="14" y="32" width="26" height="7" rx="3"/></g></svg><b>0</b></button>
-  <button id="btn-bottle" aria-label="Antivirüs şişesi"><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path d="M19 6h10v8l7 9v17a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V23l7-9z" fill="#b98bff" stroke="#14213a" stroke-width="3"/><path d="M15 30h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><b>0</b></button>
+  <button id="btn-rapid" aria-label="Seri fırlatıcı" data-t-label><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><g fill="#8ff6ff" stroke="#14213a" stroke-width="2.5"><rect x="6" y="12" width="26" height="7" rx="3"/><rect x="10" y="22" width="26" height="7" rx="3"/><rect x="14" y="32" width="26" height="7" rx="3"/></g></svg><b>0</b></button>
+  <button id="btn-bottle" aria-label="Antivirüs şişesi" data-t-label><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path d="M19 6h10v8l7 9v17a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V23l7-9z" fill="#b98bff" stroke="#14213a" stroke-width="3"/><path d="M15 30h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><b>0</b></button>
   <svg id="pull" aria-hidden="true"><circle id="pull-ring" r="34" /><circle id="pull-arc" r="34" /><line id="pull-line" /><circle id="pull-dot" r="9" /></svg>
   <div id="banner"></div>
   <div id="combo"></div>
-  <div id="hint" class="hidden"><div class="finger"></div><span>Geri çek, bırak!</span></div>
-  <button id="btn-gas" aria-label="Antivirüs gaz bombası"><svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true">
+  <div id="hint" class="hidden"><div class="finger"></div><span data-t>Geri çek, bırak!</span></div>
+  <button id="btn-gas" aria-label="Antivirüs gaz bombası" data-t-label><svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true">
     <rect x="20" y="16" width="24" height="38" rx="8" fill="#3fd0ff" stroke="#14213a" stroke-width="4"/>
     <rect x="26" y="8" width="12" height="10" rx="3" fill="#e7f6ff" stroke="#14213a" stroke-width="4"/>
     <path d="M24 34h16M32 26v16" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
     <circle cx="50" cy="14" r="5" fill="#b8f4ff"/><circle cx="55" cy="24" r="3.5" fill="#b8f4ff"/></svg><span id="gas-cd"></span></button>
   <div id="screen-start" class="screen">
     <img class="logo" src="./ui/logo.png" alt="UNZOMBIE" />
-    <p class="sub">Öldürme. İyileştir.</p>
-    <p>Parmağını geriye sürükle, bırak: panzehir şırıngası fırlar.<br />Zombiler kuleye tırmanmadan onları insana döndür.</p>
-    <button id="btn-start">Başla</button>
-    <p class="tiny">Prototip 0.4 · Gri Saat</p>
+    <p class="sub" data-t>Öldürme. İyileştir.</p>
+    <p data-t>Parmağını geriye sürükle, bırak: panzehir şırıngası fırlar.<br />Zombiler kuleye tırmanmadan onları insana döndür.</p>
+    <button id="btn-start" data-t>Başla</button>
+    <p class="tiny">Prototip 0.4 · <select id="lang-start" class="lang" aria-label="Language"></select></p>
   </div>
   <div id="screen-map" class="screen hidden">
     <h2 id="map-title">Akşam Caddesi</h2>
-    <p id="grey-hour" class="grey hidden">GRİ SAAT! Şu an kazanılan serum iki katı.</p>
+    <p id="grey-hour" class="grey hidden" data-t>GRİ SAAT! Şu an kazanılan serum iki katı.</p>
     <p id="map-note" class="note"></p>
     <div id="levels" class="levels"></div>
     <div id="regions" class="regions"></div>
     <div id="missions" class="missions"></div>
-    <div class="row"><button id="btn-lab" class="small">Laboratuvar</button><span class="wallet"><img src="./ui/syringe.png" alt="" /><b id="serum">0</b></span></div>
+    <div class="row modes"><button id="btn-daily" class="small"></button><button id="btn-endless" class="small orange"></button></div>
+    <div class="row"><button id="btn-lab" class="small" data-t>Laboratuvar</button><span class="wallet"><img src="./ui/syringe.png" alt="" /><b id="serum">0</b></span></div>
   </div>
   <div id="screen-lab" class="screen hidden">
-    <h2>Laboratuvar</h2>
+    <h2 data-t>Laboratuvar</h2>
     <div id="upgrades" class="upgrades"></div>
-    <p class="album"><img src="./ui/cured.png" alt="" /> Kurtarılanlar albümü: <b id="rescued">0</b> kişi</p>
+    <p class="album"><img src="./ui/cured.png" alt="" /> <span data-t>Kurtarılanlar albümü:</span> <b id="rescued">0</b> <span data-t>kişi</span></p>
     <div id="album-pages" class="album-pages"></div>
-    <button id="btn-lab-back" class="small">Haritaya dön</button>
+    <button id="btn-lab-back" class="small" data-t>Haritaya dön</button>
   </div>
   <div id="screen-win" class="screen hidden">
-    <h1>BÖLÜM TAMAM!</h1>
+    <h1 data-t>BÖLÜM TAMAM!</h1>
     <div id="win-stars" class="stars"></div>
     <p id="win-stats"></p>
     <p id="win-news" class="note"></p>
     <div id="win-goals" class="goals"></div>
-    <div class="row"><button id="btn-next">Sonraki</button><button id="btn-win-map" class="orange small">Harita</button></div>
+    <div class="row"><button id="btn-next" data-t>Sonraki</button><button id="btn-win-map" class="orange small" data-t>Harita</button></div>
   </div>
   <div id="screen-over" class="screen hidden">
-    <h1>BARİKAT AŞILDI</h1>
+    <h1 data-t>BARİKAT AŞILDI</h1>
     <p id="over-stats"></p>
     <div id="over-goals" class="goals"></div>
-    <div class="row"><button id="btn-continue">Devam et</button><button id="btn-retry" class="orange">Bir daha</button></div>
-    <button id="btn-over-map" class="small">Harita</button>
+    <div class="row"><button id="btn-continue" data-t>Devam et</button><button id="btn-retry" class="orange" data-t>Bir daha</button></div>
+    <button id="btn-over-map" class="small" data-t>Harita</button>
   </div>
   <div id="screen-pause" class="screen hidden">
-    <h1>DURAKLADI</h1>
+    <h1 data-t>DURAKLADI</h1>
     <div id="pause-goals" class="goals"></div>
-    <div class="row"><button id="btn-resume">Devam</button><button id="btn-restart" class="orange small">Yeniden başla</button></div>
+    <div class="row"><button id="btn-resume" data-t>Devam</button><button id="btn-restart" class="orange small" data-t>Yeniden başla</button></div>
     <div class="toggles">
-      <label><input type="checkbox" data-set="sound" /> Ses efektleri</label>
-      <label><input type="checkbox" data-set="music" /> Müzik</label>
-      <label><input type="checkbox" data-set="haptics" /> Titreşim</label>
-      <label><input type="checkbox" data-set="shake" /> Ekran sarsıntısı</label>
-      <label><input type="checkbox" data-set="left" /> Solak düzen</label>
-      <label><input type="checkbox" data-set="holdAssist" /> Boğuşmada basılı tut</label>
-      <label><input type="checkbox" data-set="hints" /> İpuçları</label>
+      <label><input type="checkbox" data-set="sound" /> <span data-t>Ses efektleri</span></label>
+      <label><input type="checkbox" data-set="music" /> <span data-t>Müzik</span></label>
+      <label><input type="checkbox" data-set="haptics" /> <span data-t>Titreşim</span></label>
+      <label><input type="checkbox" data-set="shake" /> <span data-t>Ekran sarsıntısı</span></label>
+      <label><input type="checkbox" data-set="left" /> <span data-t>Solak düzen</span></label>
+      <label><input type="checkbox" data-set="holdAssist" /> <span data-t>Boğuşmada basılı tut</span></label>
+      <label><input type="checkbox" data-set="hints" /> <span data-t>İpuçları</span></label>
+      <label class="langrow"><span data-t>Dil</span> <select id="lang-pause" class="lang" aria-label="Language"></select></label>
     </div>
-    <button id="btn-pause-map" class="small">Haritaya dön</button>
+    <button id="btn-pause-map" class="small" data-t>Haritaya dön</button>
   </div>
 </body>
 </html>
