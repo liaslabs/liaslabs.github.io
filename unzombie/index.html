@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <title>Unzombie</title>
+  <script type="module" crossorigin src="./assets/index-1Gxl0_LS.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DCmXVRjg.css">
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="hud">
+    <div class="pill"><span id="hud-wave">Dalga 1</span></div>
+    <div class="pill"><img src="./ui/cured.png" alt="" /><span id="hud-saved">0</span></div>
+    <div class="pill"><img src="./ui/bolt.png" alt="" /><span id="hud-score">0</span></div>
+    <div class="pill" id="hud-fence"><img src="./ui/heart.png" alt="" /><span class="tower-bar"><span id="tower-fill"></span></span></div>
+  </div>
+  <div id="banner"></div>
+  <div id="combo"></div>
+  <div id="hint" class="hidden"><div class="finger"></div><span>Geri çek, bırak!</span></div>
+  <button id="btn-gas" aria-label="Antivirüs gaz bombası"><svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true">
+    <rect x="20" y="16" width="24" height="38" rx="8" fill="#3fd0ff" stroke="#14213a" stroke-width="4"/>
+    <rect x="26" y="8" width="12" height="10" rx="3" fill="#e7f6ff" stroke="#14213a" stroke-width="4"/>
+    <path d="M24 34h16M32 26v16" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="50" cy="14" r="5" fill="#b8f4ff"/><circle cx="55" cy="24" r="3.5" fill="#b8f4ff"/></svg><span id="gas-cd"></span></button>
+  <div id="screen-start" class="screen">
+    <img class="logo" src="./ui/logo.png" alt="UNZOMBIE" />
+    <p class="sub">Öldürme. İyileştir.</p>
+    <p>Parmağını geriye sürükle, bırak: panzehir şırıngası fırlar.<br />Zombiler kuleye tırmanmadan onları insana döndür.</p>
+    <button id="btn-start">Başla</button>
+    <p class="tiny">Prototip 0.2 · Gri Saat</p>
+  </div>
+  <div id="screen-map" class="screen hidden">
+    <h2 id="map-title">Akşam Caddesi</h2>
+    <p id="grey-hour" class="grey hidden">GRİ SAAT! Şu an kazanılan serum iki katı.</p>
+    <p id="map-note" class="note"></p>
+    <div id="levels" class="levels"></div>
+    <div id="regions" class="regions"></div>
+    <div id="missions" class="missions"></div>
+    <div class="row"><button id="btn-lab" class="small">Laboratuvar</button><span class="wallet"><img src="./ui/syringe.png" alt="" /><b id="serum">0</b></span></div>
+  </div>
+  <div id="screen-lab" class="screen hidden">
+    <h2>Laboratuvar</h2>
+    <div id="upgrades" class="upgrades"></div>
+    <p class="album"><img src="./ui/cured.png" alt="" /> Kurtarılanlar albümü: <b id="rescued">0</b> kişi</p>
+    <div id="album-pages" class="album-pages"></div>
+    <button id="btn-lab-back" class="small">Haritaya dön</button>
+  </div>
+  <div id="screen-win" class="screen hidden">
+    <h1>BÖLÜM TAMAM!</h1>
+    <div id="win-stars" class="stars"></div>
+    <p id="win-stats"></p>
+    <p id="win-news" class="note"></p>
+    <div id="win-goals" class="goals"></div>
+    <div class="row"><button id="btn-next">Sonraki</button><button id="btn-win-map" class="orange small">Harita</button></div>
+  </div>
+  <div id="screen-over" class="screen hidden">
+    <h1>BARİKAT AŞILDI</h1>
+    <p id="over-stats"></p>
+    <div id="over-goals" class="goals"></div>
+    <div class="row"><button id="btn-continue">Devam et</button><button id="btn-retry" class="orange">Bir daha</button></div>
+    <button id="btn-over-map" class="small">Harita</button>
+  </div>
+</body>
+</html>
