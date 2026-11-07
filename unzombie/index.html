@@ -11,8 +11,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="./ui/icon-192.png" />
   <title>Unzombie</title>
-  <script type="module" crossorigin src="./assets/index-C6ofBA_d.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-D9vyST9l.css">
+  <script type="module" crossorigin src="./assets/index-7eCwQU36.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DtS4BnVp.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -50,20 +50,28 @@
     <p class="sub" data-t>Öldürme. İyileştir.</p>
     <p data-t>Parmağını geriye sürükle, bırak: panzehir şırıngası fırlar.<br />Zombiler kuleye tırmanmadan onları insana döndür.</p>
     <button id="btn-start" data-t>Başla</button>
-    <p class="tiny">Prototip 0.4 · <select id="lang-start" class="lang" aria-label="Language"></select></p>
+    <p class="tiny">v0.4 · <select id="lang-start" class="lang" aria-label="Language"></select></p>
   </div>
   <div id="screen-map" class="screen hidden">
+    <!-- owner, 7 Nov: one big "play" button in the middle; Lab and the extra modes as icons top right; stocks top left -->
+    <div class="map-stocks"><span class="stock"><img src="./ui/syringe.png" alt="" /><b id="serum">0</b></span><span class="stock" id="stock-vac"><i class="ico"></i><b id="vac-n">0</b></span></div>
+    <div class="map-icons">
+      <button id="btn-daily" class="icon-btn"><i class="ico"></i><small data-t>Günün Salgını</small></button>
+      <button id="btn-endless" class="icon-btn"><i class="ico"></i><small data-t>Sonsuz Sürü</small></button>
+      <button id="btn-lab" class="icon-btn"><i class="ico"></i><small data-t>Laboratuvar</small><em class="badge hidden">!</em></button>
+    </div>
     <h2 id="map-title">Akşam Caddesi</h2>
     <p id="grey-hour" class="grey hidden" data-t>GRİ SAAT! Şu an kazanılan serum iki katı.</p>
     <p id="map-note" class="note"></p>
     <div id="levels" class="levels"></div>
     <div id="regions" class="regions"></div>
     <div id="missions" class="missions"></div>
-    <div class="row modes"><button id="btn-daily" class="small"></button><button id="btn-endless" class="small orange"></button></div>
-    <div class="row"><button id="btn-lab" class="small" data-t>Laboratuvar</button><span class="wallet"><img src="./ui/syringe.png" alt="" /><b id="serum">0</b></span></div>
+    <button id="btn-play" class="orange play"></button>
+    <div id="mode-card" class="mode-card hidden" role="dialog"><div class="box"><button class="x" aria-label="X">✕</button><i class="ico"></i><h3></h3><p></p><button class="go orange small"></button></div></div>
   </div>
   <div id="screen-lab" class="screen hidden">
     <div class="lab-deco" aria-hidden="true"><i class="flask f1"></i><i class="flask f2"></i><i class="flask f3"></i><i class="bub b1"></i><i class="bub b2"></i><i class="bub b3"></i><i class="bub b4"></i></div>
+    <div class="map-stocks"><span class="stock"><img src="./ui/syringe.png" alt="" /><b id="serum-lab">0</b></span></div>
     <h2 class="lab-title"><span data-t>Laboratuvar</span></h2>
     <div id="upgrades" class="upgrades"></div>
     <h3 data-t>Gardırop</h3>
