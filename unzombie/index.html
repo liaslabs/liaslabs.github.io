@@ -11,8 +11,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="./ui/icon-192.png" />
   <title>Unzombie</title>
-  <script type="module" crossorigin src="./assets/index-DR-Y86r-.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DbfpbS56.css">
+  <script type="module" crossorigin src="./assets/index-Bak8Lus3.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-YP9XKYgZ.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -35,6 +35,7 @@
   <button id="btn-air" aria-label="Hava desteği" data-t-label><svg viewBox="0 0 64 48" width="40" height="30" aria-hidden="true"><path d="M6 8h44" stroke="#1a0c2a" stroke-width="5" stroke-linecap="round"/><path d="M6 8h44" stroke="#c9d2dc" stroke-width="2.5" stroke-linecap="round"/><path d="M28 8v6" stroke="#1a0c2a" stroke-width="4"/><path d="M10 26c0-8 8-12 18-12s16 5 16 12-7 10-16 10S10 33 10 26z" fill="#ff8a3d" stroke="#1a0c2a" stroke-width="3.5"/><path d="M14 24c0-5 4-7 9-7v9z" fill="#8ff6ff" stroke="#1a0c2a" stroke-width="2.5"/><path d="M44 24l14-4v8z" fill="#ff8a3d" stroke="#1a0c2a" stroke-width="3" stroke-linejoin="round"/><path d="M14 40h26" stroke="#1a0c2a" stroke-width="3.5" stroke-linecap="round"/><path d="M27 36v10" stroke="#1a0c2a" stroke-width="2"/><circle cx="27" cy="45" r="2.5" fill="#3fd0ff" stroke="#1a0c2a" stroke-width="1.5"/></svg><b>0</b></button>
   <div id="weather" aria-hidden="true"></div>
   <button id="btn-vaccine" aria-label="Bağışıklık aşısı" data-t-label><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path d="M24 4l16 6v12c0 10-7 18-16 22C15 40 8 32 8 22V10z" fill="#ffd84a" stroke="#14213a" stroke-width="3"/><path d="M24 14v16M16 22h16" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg><b>0</b></button>
+  <button id="btn-rain" aria-label="Antivirüs yağmuru" data-t-label><i class="ico"></i><b>0</b></button>
   <button id="btn-gold" aria-label="Altın Şırınga" data-t-label><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><g transform="rotate(-35 24 24)"><rect x="9" y="19" width="24" height="10" rx="3" fill="#ffd23a" stroke="#14213a" stroke-width="2.5"/><path d="M33 24h9" stroke="#14213a" stroke-width="3" stroke-linecap="round"/><path d="M4 24h5M6 20v8" stroke="#14213a" stroke-width="2.5" stroke-linecap="round"/></g><path d="M36 8l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1z" fill="#fff6c2" stroke="#14213a" stroke-width="1.5"/></svg><b>0</b></button>
   <button id="btn-bottle" aria-label="Antivirüs şişesi" data-t-label><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path d="M19 6h10v8l7 9v17a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V23l7-9z" fill="#b98bff" stroke="#14213a" stroke-width="3"/><path d="M15 30h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><b>0</b></button>
   <svg id="pull" aria-hidden="true"><circle id="pull-ring" r="34" /><circle id="pull-arc" r="34" /><line id="pull-line" /><circle id="pull-dot" r="9" /></svg>
@@ -59,7 +60,7 @@
   </div>
   <div id="screen-map" class="screen hidden">
     <!-- owner, 7 Nov: one big "play" button in the middle; Lab and the extra modes as icons top right; stocks top left -->
-    <div class="map-stocks"><span class="stock"><img src="./ui/syringe.png" alt="" /><b id="serum">0</b></span><span class="stock" id="stock-vac"><i class="ico"></i><b id="vac-n">0</b></span><span class="stock" id="stock-air"><i class="ico"><svg viewBox="0 0 64 48" width="40" height="30" aria-hidden="true"><path d="M6 8h44" stroke="#1a0c2a" stroke-width="5" stroke-linecap="round"/><path d="M6 8h44" stroke="#c9d2dc" stroke-width="2.5" stroke-linecap="round"/><path d="M28 8v6" stroke="#1a0c2a" stroke-width="4"/><path d="M10 26c0-8 8-12 18-12s16 5 16 12-7 10-16 10S10 33 10 26z" fill="#ff8a3d" stroke="#1a0c2a" stroke-width="3.5"/><path d="M14 24c0-5 4-7 9-7v9z" fill="#8ff6ff" stroke="#1a0c2a" stroke-width="2.5"/><path d="M44 24l14-4v8z" fill="#ff8a3d" stroke="#1a0c2a" stroke-width="3" stroke-linejoin="round"/><path d="M14 40h26" stroke="#1a0c2a" stroke-width="3.5" stroke-linecap="round"/><path d="M27 36v10" stroke="#1a0c2a" stroke-width="2"/><circle cx="27" cy="45" r="2.5" fill="#3fd0ff" stroke="#1a0c2a" stroke-width="1.5"/></svg></i><b id="air-n">0</b></span></div>
+    <div class="map-stocks"><span class="stock"><img src="./ui/syringe.png" alt="" /><b id="serum">0</b></span><span class="stock" id="stock-vac"><i class="ico"></i><b id="vac-n">0</b></span><span class="stock" id="stock-gem"><i class="ico"></i><b id="gem-n">0</b></span><span class="stock" id="stock-air"><i class="ico"><svg viewBox="0 0 64 48" width="40" height="30" aria-hidden="true"><path d="M6 8h44" stroke="#1a0c2a" stroke-width="5" stroke-linecap="round"/><path d="M6 8h44" stroke="#c9d2dc" stroke-width="2.5" stroke-linecap="round"/><path d="M28 8v6" stroke="#1a0c2a" stroke-width="4"/><path d="M10 26c0-8 8-12 18-12s16 5 16 12-7 10-16 10S10 33 10 26z" fill="#ff8a3d" stroke="#1a0c2a" stroke-width="3.5"/><path d="M14 24c0-5 4-7 9-7v9z" fill="#8ff6ff" stroke="#1a0c2a" stroke-width="2.5"/><path d="M44 24l14-4v8z" fill="#ff8a3d" stroke="#1a0c2a" stroke-width="3" stroke-linejoin="round"/><path d="M14 40h26" stroke="#1a0c2a" stroke-width="3.5" stroke-linecap="round"/><path d="M27 36v10" stroke="#1a0c2a" stroke-width="2"/><circle cx="27" cy="45" r="2.5" fill="#3fd0ff" stroke="#1a0c2a" stroke-width="1.5"/></svg></i><b id="air-n">0</b></span></div>
     <div class="map-icons">
       <button id="btn-daily" class="icon-btn"><i class="ico"></i><small data-t>Günün Salgını</small></button>
       <button id="btn-weekly" class="icon-btn"><i class="ico"></i><small data-t>Haftanın Modu</small></button>
@@ -78,15 +79,19 @@
   </div>
   <div id="screen-lab" class="screen hidden">
     <div class="lab-deco" aria-hidden="true"><i class="flask f1"></i><i class="flask f2"></i><i class="flask f3"></i><i class="bub b1"></i><i class="bub b2"></i><i class="bub b3"></i><i class="bub b4"></i></div>
-    <div class="map-stocks"><span class="stock"><img src="./ui/syringe.png" alt="" /><b id="serum-lab">0</b></span></div>
+    <div class="map-stocks"><span class="stock"><img src="./ui/syringe.png" alt="" /><b id="serum-lab">0</b></span><span class="stock"><i class="ico gem-ico"></i><b id="gem-lab">0</b></span></div>
     <h2 class="lab-title"><span data-t>Laboratuvar</span></h2>
     <div id="upgrades" class="upgrades"></div>
     <h3 data-t>Gardırop</h3>
     <div id="wardrobe" class="wardrobe"></div>
     <p class="vac-note"><button id="vaccine-buy" class="small"></button><small data-t>Bölümde 12 sn: barikat yarım hasar alır, Lydia zombiyi hemen iter.</small></p>
+    <p class="vac-note"><button id="rain-buy" class="small"></button><small data-t>Bastığında antivirüs yağmuru başlar. Gücü yağmur yükseltmesiyle artar.</small></p>
     <p class="vac-note"><button id="gold-buy" class="small"></button><small data-t>Bastığında sıradaki atış Altın Şırınga olur: çevresindeki herkesi iyileştirir.</small></p>
     <p class="vac-note"><button id="rapid-buy" class="small"></button><small data-t>Seri fırlatıcı için yedek şarjör. Bölümün kendi paketleri bitince kullanılır.</small></p>
     <p class="vac-note"><button id="air-buy" class="small"></button><small data-t>Rosa helikopterle şişeyi kalabalığın üstüne getirir. Şişeyi vur: antivirüs yağar.</small></p>
+    <h3 data-t>Antikor</h3>
+    <p class="gem-note" data-t>Antikorlar ilk 3 yıldızda, boss bölümlerinde, albümde ve özel modlarda kazanılır. Güçlendirici al ya da seruma çevir.</p>
+    <div id="gem-shop" class="gem-shop"></div>
     <h3 data-t>Kamp</h3>
     <div id="camp" class="camp"></div>
     <p class="album"><img src="./ui/cured.png" alt="" /> <span data-t>Kurtarılanlar albümü:</span> <b id="rescued">0</b> <span data-t>kişi</span></p>
