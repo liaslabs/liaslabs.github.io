@@ -11,8 +11,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="./ui/icon-192.png" />
   <title>Unzombie</title>
-  <script type="module" crossorigin src="./assets/index-C8oxcGIf.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-_PqcR7lA.css">
+  <script type="module" crossorigin src="./assets/index-nXu0AZFE.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-D_YXrhTq.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -31,13 +31,16 @@
       <div class="str-finger"></div>
     </div>
   </div>
-  <button id="btn-rapid" aria-label="Seri fırlatıcı" data-t-label><img class="pic" src="./ui/rapid.png" alt="" /><svg class="mag" viewBox="0 0 80 80" aria-hidden="true"><circle class="bg" cx="40" cy="40" r="36"/><circle class="fill" cx="40" cy="40" r="36"/></svg></button>
-  <button id="btn-air" aria-label="Hava desteği" data-t-label><img class="heli" src="./ui/heli.png" alt="" /><b>0</b></button>
   <div id="weather" aria-hidden="true"></div>
-  <button id="btn-vaccine" aria-label="Bağışıklık aşısı" data-t-label><img class="pic" src="./ui/vaccine.png" alt="" /><b>0</b></button>
-  <button id="btn-rain" aria-label="Antivirüs yağmuru" data-t-label><i class="ico"></i><b>0</b></button>
-  <button id="btn-gold" aria-label="Altın Şırınga" data-t-label><img class="pic" src="./ui/gold.png" alt="" /><b>0</b></button>
+  <div id="tools">
+  <button id="btn-gas" aria-label="Antivirüs gaz bombası" data-t-label><img class="pic" src="./ui/gas.png" alt="" /><span id="gas-cd"></span></button>
+  <button id="btn-rapid" aria-label="Seri fırlatıcı" data-t-label><img class="pic" src="./ui/rapid.png" alt="" /><svg class="mag" viewBox="0 0 80 80" aria-hidden="true"><circle class="bg" cx="40" cy="40" r="36"/><circle class="fill" cx="40" cy="40" r="36"/></svg></button>
   <button id="btn-bottle" aria-label="Antivirüs şişesi" data-t-label><img class="pic" src="./ui/bottle.png" alt="" /><b>0</b></button>
+  <button id="btn-gold" aria-label="Altın Şırınga" data-t-label><img class="pic" src="./ui/gold.png" alt="" /><b>0</b></button>
+  <button id="btn-rain" aria-label="Antivirüs yağmuru" data-t-label><i class="ico"></i><b>0</b></button>
+  <button id="btn-air" aria-label="Hava desteği" data-t-label><img class="heli" src="./ui/heli.png" alt="" /><b>0</b></button>
+  <button id="btn-vaccine" aria-label="Bağışıklık aşısı" data-t-label><img class="pic" src="./ui/vaccine.png" alt="" /><b>0</b></button>
+  </div>
   <svg id="pull" aria-hidden="true"><circle id="pull-ring" r="34" /><circle id="pull-arc" r="34" /><line id="pull-line" /><circle id="pull-dot" r="9" /></svg>
   <div id="intro" class="hidden"><small data-t>YENİ</small><b></b><span></span></div>
   <div id="speech" class="hidden"><b></b><span></span></div>
@@ -46,7 +49,6 @@
   <div id="banner"></div>
   <div id="combo"></div>
   <div id="hint" class="hidden"><div class="finger"></div><span data-t>Geri çek, bırak!</span></div>
-  <button id="btn-gas" aria-label="Antivirüs gaz bombası" data-t-label><img class="pic" src="./ui/gas.png" alt="" /><span id="gas-cd"></span></button>
   <div id="screen-start" class="screen">
     <img class="logo" src="./ui/logo.png" alt="UNZOMBIE" />
     <p class="sub" data-t>Öldürme. İyileştir.</p>
