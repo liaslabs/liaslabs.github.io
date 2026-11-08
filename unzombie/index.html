@@ -11,8 +11,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="./ui/icon-192.png" />
   <title>Unzombie</title>
-  <script type="module" crossorigin src="./assets/index-Bak8Lus3.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-YP9XKYgZ.css">
+  <script type="module" crossorigin src="./assets/index-DVUpbUZL.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CuL_gzHc.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -32,7 +32,7 @@
     </div>
   </div>
   <button id="btn-rapid" aria-label="Seri fırlatıcı" data-t-label><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><g fill="#8ff6ff" stroke="#14213a" stroke-width="2.5"><rect x="6" y="12" width="26" height="7" rx="3"/><rect x="10" y="22" width="26" height="7" rx="3"/><rect x="14" y="32" width="26" height="7" rx="3"/></g></svg><svg class="mag" viewBox="0 0 80 80" aria-hidden="true"><circle class="bg" cx="40" cy="40" r="36"/><circle class="fill" cx="40" cy="40" r="36"/></svg></button>
-  <button id="btn-air" aria-label="Hava desteği" data-t-label><svg viewBox="0 0 64 48" width="40" height="30" aria-hidden="true"><path d="M6 8h44" stroke="#1a0c2a" stroke-width="5" stroke-linecap="round"/><path d="M6 8h44" stroke="#c9d2dc" stroke-width="2.5" stroke-linecap="round"/><path d="M28 8v6" stroke="#1a0c2a" stroke-width="4"/><path d="M10 26c0-8 8-12 18-12s16 5 16 12-7 10-16 10S10 33 10 26z" fill="#ff8a3d" stroke="#1a0c2a" stroke-width="3.5"/><path d="M14 24c0-5 4-7 9-7v9z" fill="#8ff6ff" stroke="#1a0c2a" stroke-width="2.5"/><path d="M44 24l14-4v8z" fill="#ff8a3d" stroke="#1a0c2a" stroke-width="3" stroke-linejoin="round"/><path d="M14 40h26" stroke="#1a0c2a" stroke-width="3.5" stroke-linecap="round"/><path d="M27 36v10" stroke="#1a0c2a" stroke-width="2"/><circle cx="27" cy="45" r="2.5" fill="#3fd0ff" stroke="#1a0c2a" stroke-width="1.5"/></svg><b>0</b></button>
+  <button id="btn-air" aria-label="Hava desteği" data-t-label><img class="heli" src="./ui/heli.png" alt="" /><b>0</b></button>
   <div id="weather" aria-hidden="true"></div>
   <button id="btn-vaccine" aria-label="Bağışıklık aşısı" data-t-label><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path d="M24 4l16 6v12c0 10-7 18-16 22C15 40 8 32 8 22V10z" fill="#ffd84a" stroke="#14213a" stroke-width="3"/><path d="M24 14v16M16 22h16" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg><b>0</b></button>
   <button id="btn-rain" aria-label="Antivirüs yağmuru" data-t-label><i class="ico"></i><b>0</b></button>
@@ -60,7 +60,7 @@
   </div>
   <div id="screen-map" class="screen hidden">
     <!-- owner, 7 Nov: one big "play" button in the middle; Lab and the extra modes as icons top right; stocks top left -->
-    <div class="map-stocks"><span class="stock"><img src="./ui/syringe.png" alt="" /><b id="serum">0</b></span><span class="stock" id="stock-vac"><i class="ico"></i><b id="vac-n">0</b></span><span class="stock" id="stock-gem"><i class="ico"></i><b id="gem-n">0</b></span><span class="stock" id="stock-air"><i class="ico"><svg viewBox="0 0 64 48" width="40" height="30" aria-hidden="true"><path d="M6 8h44" stroke="#1a0c2a" stroke-width="5" stroke-linecap="round"/><path d="M6 8h44" stroke="#c9d2dc" stroke-width="2.5" stroke-linecap="round"/><path d="M28 8v6" stroke="#1a0c2a" stroke-width="4"/><path d="M10 26c0-8 8-12 18-12s16 5 16 12-7 10-16 10S10 33 10 26z" fill="#ff8a3d" stroke="#1a0c2a" stroke-width="3.5"/><path d="M14 24c0-5 4-7 9-7v9z" fill="#8ff6ff" stroke="#1a0c2a" stroke-width="2.5"/><path d="M44 24l14-4v8z" fill="#ff8a3d" stroke="#1a0c2a" stroke-width="3" stroke-linejoin="round"/><path d="M14 40h26" stroke="#1a0c2a" stroke-width="3.5" stroke-linecap="round"/><path d="M27 36v10" stroke="#1a0c2a" stroke-width="2"/><circle cx="27" cy="45" r="2.5" fill="#3fd0ff" stroke="#1a0c2a" stroke-width="1.5"/></svg></i><b id="air-n">0</b></span></div>
+    <div class="map-stocks"><span class="stock"><img src="./ui/syringe.png" alt="" /><b id="serum">0</b></span><span class="stock" id="stock-vac"><i class="ico"></i><b id="vac-n">0</b></span><span class="stock" id="stock-gem"><i class="ico"></i><b id="gem-n">0</b></span><span class="stock" id="stock-air"><i class="ico"><img class="heli" src="./ui/heli.png" alt="" /></i><b id="air-n">0</b></span></div>
     <div class="map-icons">
       <button id="btn-daily" class="icon-btn"><i class="ico"></i><small data-t>Günün Salgını</small></button>
       <button id="btn-weekly" class="icon-btn"><i class="ico"></i><small data-t>Haftanın Modu</small></button>
