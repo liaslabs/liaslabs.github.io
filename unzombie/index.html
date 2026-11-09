@@ -11,8 +11,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="./ui/icon-192.png" />
   <title>Unzombie</title>
-  <script type="module" crossorigin src="./assets/index-Btk1mQgL.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-OgN7chgV.css">
+  <script type="module" crossorigin src="./assets/index-DcnMQB8v.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DJsSgd-8.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -108,13 +108,21 @@
     <button id="btn-lab-back" class="small" data-t>Haritaya dön</button>
   </div>
   <div id="screen-win" class="screen hidden">
-    <h1 data-t>BÖLÜM TAMAM!</h1>
-    <div id="win-stars" class="stars"></div>
-    <p id="win-stats"></p>
-    <p id="win-news" class="note"></p>
+    <img id="win-hero" alt="" />
+    <div id="win-bubble"></div>
+    <div class="win-main">
+      <h1 id="win-title">BÖLÜM TAMAM!</h1>
+      <div id="win-stars" class="stars"></div>
+      <p id="win-stats"></p>
+      <p id="win-news" class="note"></p>
+      <div id="win-road"></div>
+    </div>
     <div id="win-goals" class="goals"></div>
-    <button id="btn-share" class="small hidden" data-t>Paylaş</button>
-    <div class="row"><button id="btn-next" data-t>Sonraki</button><button id="btn-win-map" class="orange small" data-t>Harita</button></div>
+    <div class="win-btns">
+      <button id="btn-win-map" class="wic" aria-label="Harita"><svg viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z M9 4v14 M15 6v14"/></svg></button>
+      <button id="btn-next"><span data-t>Sonraki</span><small id="win-next-n"></small></button>
+      <button id="btn-share" class="wic hidden" aria-label="Paylaş"><svg viewBox="0 0 24 24"><path d="M12 15V3 M7 8l5-5 5 5 M5 13v7h14v-7"/></svg></button>
+    </div>
   </div>
   <div id="screen-over" class="screen hidden">
     <h1 data-t>BARİKAT AŞILDI</h1>
