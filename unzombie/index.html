@@ -10,8 +10,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="./ui/icon-192.png" />
   <title>Unzombie</title>
-  <script type="module" crossorigin src="./assets/index-dBifSr6w.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-D2tGos_P.css">
+  <script type="module" crossorigin src="./assets/index-dxUAZPPD.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CxBuMXvH.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -31,10 +31,12 @@
     </div>
   </div>
   <div id="weather" aria-hidden="true"></div>
+  <div id="freeze-flash" aria-hidden="true"></div>
   <div id="tools">
   <button id="btn-gas" aria-label="Antivirüs gaz bombası" data-t-label><img class="pic" src="./ui/gas.png" alt="" /><span id="gas-cd"></span></button>
   <button id="btn-rapid" aria-label="Seri fırlatıcı" data-t-label><img class="pic" src="./ui/rapid.png" alt="" /><svg class="mag" viewBox="0 0 80 80" aria-hidden="true"><circle class="bg" cx="40" cy="40" r="36"/><circle class="fill" cx="40" cy="40" r="36"/></svg></button>
   <button id="btn-bottle" aria-label="Antivirüs şişesi" data-t-label><img class="pic" src="./ui/bottle.png" alt="" /><b>0</b></button>
+  <button id="btn-freeze" aria-label="Buz silahı" data-t-label><i class="ico"></i><span class="cd"></span><b>0</b></button>
   <button id="btn-gold" aria-label="Altın Şırınga" data-t-label><img class="pic" src="./ui/gold.png" alt="" /><b>0</b></button>
   <button id="btn-rain" aria-label="Antivirüs yağmuru" data-t-label><i class="ico"></i><b>0</b></button>
   <button id="btn-air" aria-label="Hava desteği" data-t-label><img class="heli" src="./ui/heli.png" alt="" /><b>0</b></button>
@@ -58,8 +60,9 @@
   </div>
   <div id="screen-map" class="screen hidden">
     <!-- owner, 7 Nov: one big "play" button in the middle; Lab and the extra modes as icons top right; stocks top left -->
-    <div class="map-stocks"><span class="stock"><img src="./ui/serum.png" alt="" /><b id="serum">0</b></span><span class="stock" id="stock-vac"><i class="ico"></i><b id="vac-n">0</b></span><span class="stock" id="stock-gem"><i class="ico"></i><b id="gem-n">0</b></span><span class="stock" id="stock-air"><i class="ico"><img class="heli" src="./ui/heli.png" alt="" /></i><b id="air-n">0</b></span></div>
+    <div class="map-stocks"><span class="stock"><img src="./ui/serum.png" alt="" /><b id="serum">0</b></span><span class="stock" id="stock-vac"><i class="ico"></i><b id="vac-n">0</b></span><span class="stock" id="stock-gem"><i class="ico"></i><b id="gem-n">0</b></span><span class="stock" id="stock-ice"><i class="ico"></i><b id="ice-n">0</b></span><span class="stock" id="stock-air"><i class="ico"><img class="heli" src="./ui/heli.png" alt="" /></i><b id="air-n">0</b></span></div>
     <div class="map-icons">
+      <button id="btn-season" class="icon-btn season-btn hidden"><i class="ico"></i><small></small><em class="tierN">0</em><span class="sbar"><i></i></span></button>
       <button id="btn-daily" class="icon-btn"><i class="ico"></i><small data-t>Günün Salgını</small></button>
       <button id="btn-weekly" class="icon-btn"><i class="ico"></i><small data-t>Haftanın Modu</small></button>
       <button id="btn-endless" class="icon-btn"><i class="ico"></i><small data-t>Sonsuz Sürü</small></button>
@@ -73,6 +76,12 @@
     <div id="missions" class="missions"></div>
     <div id="streak" class="streak"></div>
     <button id="btn-play" class="orange play"></button>
+    <div id="season" class="season hidden" role="dialog"><div class="box"><button class="x" aria-label="X">✕</button>
+      <div class="s-head"><i class="ico"></i><div><h3></h3><p class="s-left"></p></div><div class="s-tier"><b></b><small data-t>Kademe</small></div></div>
+      <div class="s-prog"><i></i><span></span></div>
+      <div class="s-road"></div>
+      <p class="s-how" data-t>Bölüm kazan, Günün Salgını'nı ve haftalık modu oyna, görevleri bitir: sezon puanı toplanır.</p>
+    </div></div>
     <div id="mode-card" class="mode-card hidden" role="dialog"><div class="box"><button class="x" aria-label="X">✕</button><i class="ico"></i><h3></h3><p></p><button class="go orange small"></button></div></div>
   </div>
   <div id="screen-lab" class="screen hidden">
@@ -84,6 +93,7 @@
     <div id="wardrobe" class="wardrobe"></div>
     <p class="vac-note"><button id="vaccine-buy" class="small"></button><small data-t>Bölümde 12 sn: barikat yarım hasar alır, Lydia zombiyi hemen iter.</small></p>
     <p class="vac-note"><button id="rain-buy" class="small"></button><small data-t>Bastığında antivirüs yağmuru başlar. Gücü yağmur yükseltmesiyle artar.</small></p>
+    <p class="vac-note"><button id="freeze-buy" class="small"></button><small data-t>Buz silahının bölüm hakları bitince yedek olarak kullanılır.</small></p>
     <p class="vac-note"><button id="gold-buy" class="small"></button><small data-t>Bastığında sıradaki atış Altın Şırınga olur: çevresindeki herkesi iyileştirir.</small></p>
     <p class="vac-note"><button id="rapid-buy" class="small"></button><small data-t>Seri fırlatıcı için yedek şarjör. Bölümün kendi paketleri bitince kullanılır.</small></p>
     <p class="vac-note"><button id="air-buy" class="small"></button><small data-t>Rosa helikopterle şişeyi kalabalığın üstüne getirir. Şişeyi vur: antivirüs yağar.</small></p>
