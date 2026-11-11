@@ -1,1 +1,1 @@
-{ "lamps": [[2262, 122, 70]], "fires": [], "lightning": true }
+{"lamps": [[2262, 122, 70]], "fires": [], "lightning": true, "front": [{"m": "front_car.png", "x": 2438, "y": 684, "foot": 905}]}
