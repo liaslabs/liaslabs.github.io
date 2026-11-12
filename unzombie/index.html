@@ -10,8 +10,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="./ui/icon-192.png" />
   <title>Unzombie</title>
-  <script type="module" crossorigin src="./assets/index-D4BYVdPT.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DgvouIFx.css">
+  <script type="module" crossorigin src="./assets/index-Bw8yeeoL.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Bt3Flnpn.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -44,6 +44,7 @@
   <button id="btn-rain" aria-label="Antivirüs yağmuru" data-t-label><i class="ico"></i><b>0</b></button>
   <button id="btn-air" aria-label="Hava desteği" data-t-label><img class="heli" src="./ui/heli.png" alt="" /><b>0</b></button>
   <button id="btn-vaccine" aria-label="Bağışıklık aşısı" data-t-label><img class="pic" src="./ui/vaccine.png" alt="" /><b>0</b></button>
+  <button id="btn-repair" aria-label="Tamir kiti" data-t-label><i class="ico"></i><b>0</b></button>
   </div>
   <svg id="pull" aria-hidden="true"><circle id="pull-ring" r="34" /><circle id="pull-arc" r="34" /><line id="pull-line" /><circle id="pull-dot" r="9" /></svg>
   <div id="intro" class="hidden"><small data-t>YENİ</small><b></b><span></span></div>
@@ -94,6 +95,7 @@
     <div id="upgrades" class="upgrades"></div>
     <h3 data-t>Gardırop</h3>
     <div id="wardrobe" class="wardrobe"></div>
+    <p class="vac-note"><button id="repair-buy" class="small"></button><small data-t>Bölümde bastığında barikat %30 onarılır.</small></p>
     <p class="vac-note"><button id="vaccine-buy" class="small"></button><small data-t>Bölümde 12 sn: barikat yarım hasar alır, Lydia zombiyi hemen iter.</small></p>
     <p class="vac-note"><button id="rain-buy" class="small"></button><small data-t>Bastığında antivirüs yağmuru başlar. Gücü yağmur yükseltmesiyle artar.</small></p>
     <p class="vac-note"><button id="freeze-buy" class="small"></button><small data-t>Buz silahının bölüm hakları bitince yedek olarak kullanılır.</small></p>
