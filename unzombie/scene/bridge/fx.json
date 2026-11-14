@@ -1,1 +1,1 @@
-{"lamps": [[2282, 135, 70]], "fires": [], "front": [{"m": "front_car.png", "x": 2163, "y": 538, "foot": 755}]}
+{"lamps": [[2282, 135, 70]], "fires": [], "variants": {"snow": {"lamps": [], "front": [{"m": "front_car.png", "x": 2189, "y": 538, "foot": 755}]}, "spring": {"lamps": [], "front": [{"m": "front_car.png", "x": 2189, "y": 538, "foot": 755}]}, "summer": {"lamps": [], "front": [{"m": "front_car.png", "x": 2189, "y": 538, "foot": 755}]}}, "front": [{"m": "front_car.png", "x": 2163, "y": 538, "foot": 755}]}
