@@ -146,7 +146,11 @@
       22
      ]
     ],
-    "lamps": []
+    "lamps": [],
+    "props": {
+     "props/barrier.png": "props/barrier_snow.png",
+     "props/bricks.png": "props/bricks_snow.png"
+    }
    },
    "spring": {
     "fires": [
@@ -172,7 +176,11 @@
       130,
       70
      ]
-    ]
+    ],
+    "props": {
+     "props/barrier.png": "props/barrier_spring.png",
+     "props/bricks.png": "props/bricks_spring.png"
+    }
    },
    "summer": {
     "fires": [
@@ -198,7 +206,11 @@
       128,
       70
      ]
-    ]
+    ],
+    "props": {
+     "props/barrier.png": "props/barrier_summer.png",
+     "props/bricks.png": "props/bricks_summer.png"
+    }
    }
   }
  },
