@@ -1,1 +1,1 @@
-2026-11-25 17:45 UTC float-fix2 dcd303f
+2026-11-25 18:00 UTC scan-fixes ace1177
