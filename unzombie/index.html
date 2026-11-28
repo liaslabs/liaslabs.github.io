@@ -11,8 +11,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="./ui/icon-192.png" />
   <title>Unzombie</title>
-  <script type="module" crossorigin src="./assets/index-CvUjJfOu.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CY0Jg1GB.css">
+  <script type="module" crossorigin src="./assets/index-Cr6z1NkC.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Cn2MEzmg.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -73,6 +73,7 @@
       <button id="btn-endless" class="icon-btn"><i class="ico"></i><small data-t>Sonsuz Sürü</small></button>
       <button id="btn-lab" class="icon-btn"><i class="ico"></i><small data-t>Laboratuvar</small><em class="badge hidden">!</em></button>
       <button id="btn-shop" class="icon-btn"><i class="ico"></i><small data-t>Mağaza</small></button>
+      <button id="btn-settings" class="icon-btn"><i class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm8.5 3.5-2-.6a6.7 6.7 0 0 0-.6-1.5l1-1.9-1.9-1.9-1.9 1a6.7 6.7 0 0 0-1.5-.6l-.6-2h-2.6l-.6 2a6.7 6.7 0 0 0-1.5.6l-1.9-1-1.9 1.9 1 1.9a6.7 6.7 0 0 0-.6 1.5l-2 .6v2.6l2 .6c.1.5.3 1 .6 1.5l-1 1.9 1.9 1.9 1.9-1c.5.3 1 .5 1.5.6l.6 2h2.6l.6-2c.5-.1 1-.3 1.5-.6l1.9 1 1.9-1.9-1-1.9c.3-.5.5-1 .6-1.5l2-.6z" fill="#e4dcff" fill-rule="evenodd" stroke="#1a0c2a" stroke-width=".8"/></svg></i><small data-t>Ayarlar</small></button>
     </div>
     <h2 id="map-title">Akşam Caddesi</h2>
     <p id="grey-hour" class="grey hidden" data-t>GRİ SAAT! Şu an kazanılan serum iki katı.</p>
@@ -92,6 +93,7 @@
   </div>
   <div id="screen-lab" class="screen hidden">
     <div class="lab-deco" aria-hidden="true"><i class="flask f1"></i><i class="flask f2"></i><i class="flask f3"></i><i class="bub b1"></i><i class="bub b2"></i><i class="bub b3"></i><i class="bub b4"></i></div>
+    <button id="btn-lab-x" class="back-x" aria-label="Geri" data-t-label><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="map-stocks"><span class="stock"><img src="./ui/serum.png" alt="" /><b id="serum-lab">0</b></span><span class="stock"><i class="ico gem-ico"></i><b id="gem-lab">0</b></span></div>
     <h2 class="lab-title"><span data-t>Laboratuvar</span></h2>
     <div id="upgrades" class="upgrades"></div>
@@ -139,25 +141,43 @@
     <div class="row"><button id="btn-continue" data-t>Devam et</button><button id="btn-continue-ad" class="hidden"></button><button id="btn-retry" class="orange" data-t>Bir daha</button></div>
     <button id="btn-over-map" class="small" data-t>Harita</button>
   </div>
+  <!-- owner, 28 Nov: "the settings and the Pause options like Blackhole's": a card with one option per line (resume, music, sounds,
+       more settings, shop, restart, map); the rest of the settings in their own card (a switch per line) -->
   <div id="screen-pause" class="screen hidden">
-    <h1 data-t>DURAKLADI</h1>
-    <div id="pause-goals" class="goals"></div>
-    <div class="row"><button id="btn-resume" data-t>Devam</button><button id="btn-restart" class="orange small" data-t>Yeniden başla</button></div>
-    <div class="toggles">
-      <label><input type="checkbox" data-set="sound" /> <span data-t>Ses efektleri</span></label>
-      <label><input type="checkbox" data-set="music" /> <span data-t>Müzik</span></label>
-      <label><input type="checkbox" data-set="haptics" /> <span data-t>Titreşim</span></label>
-      <label><input type="checkbox" data-set="shake" /> <span data-t>Ekran sarsıntısı</span></label>
-      <label><input type="checkbox" data-set="left" /> <span data-t>Solak düzen</span></label>
-      <label><input type="checkbox" data-set="holdAssist" /> <span data-t>Boğuşmada basılı tut</span></label>
-      <label><input type="checkbox" data-set="hints" /> <span data-t>İpuçları</span></label>
-      <label><input type="checkbox" data-set="lb" /> <span data-t>Dünya sıralamasına katıl</span></label>
-      <label><input type="checkbox" data-set="notif" /> <span data-t>Hatırlatma bildirimleri</span></label>
-      <label><input type="checkbox" data-set="notifDuel" /> <span data-t>Hafta sonu kapışması bildirimleri</span></label>
-      <label class="langrow"><span data-t>Dil</span> <select id="lang-pause" class="lang" aria-label="Language"></select></label>
+    <div class="pz-card">
+      <h1 data-t>DURAKLADI</h1>
+      <div id="pause-goals" class="goals"></div>
+      <div class="pz-opts">
+        <button class="popt go" id="btn-resume"><svg class="pzi" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span data-t>Devam et</span></button>
+        <button class="popt" id="pz-music"><svg class="pzi" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5a2.5 2.5 0 1 1-2-2.45V5l11-2v11.5a2.5 2.5 0 1 1-2-2.45V7.1L9 8.4z" fill="currentColor"/></svg><span data-t>Müzik</span><em></em></button>
+        <button class="popt" id="pz-sfx"><svg class="pzi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-t>Ses efektleri</span><em></em></button>
+        <button class="popt" id="pz-set"><svg class="pzi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm8.5 3.5-2-.6a6.7 6.7 0 0 0-.6-1.5l1-1.9-1.9-1.9-1.9 1a6.7 6.7 0 0 0-1.5-.6l-.6-2h-2.6l-.6 2a6.7 6.7 0 0 0-1.5.6l-1.9-1-1.9 1.9 1 1.9a6.7 6.7 0 0 0-.6 1.5l-2 .6v2.6l2 .6c.1.5.3 1 .6 1.5l-1 1.9 1.9 1.9 1.9-1c.5.3 1 .5 1.5.6l.6 2h2.6l.6-2c.5-.1 1-.3 1.5-.6l1.9 1 1.9-1.9-1-1.9c.3-.5.5-1 .6-1.5l2-.6z" fill="currentColor" fill-rule="evenodd"/></svg><span data-t>Diğer ayarlar</span></button>
+        <button class="popt" id="pz-shop"><svg class="pzi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.5l2 10h10l2-7H7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="9" cy="19" r="1.8" fill="currentColor"/><circle cx="16" cy="19" r="1.8" fill="currentColor"/></svg><span data-t>Mağaza</span></button>
+        <button class="popt" id="btn-restart"><svg class="pzi" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 1 0 2.1-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M4 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t>Yeniden başla</span></button>
+        <button class="popt" id="btn-pause-map"><svg class="pzi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2"/></svg><span data-t>Haritaya dön</span></button>
+      </div>
     </div>
-    <div class="pause-foot"><button id="btn-pause-map" class="small" data-t>Haritaya dön</button><div id="cl-box" class="cl-box" style="display:none"></div></div>
-    <div id="pause-info" class="pinfo"></div>
+  </div>
+  <div id="screen-settings" class="screen hidden">
+    <div class="st-card">
+      <button id="st-close" class="lv-x" aria-label="Kapat" data-t-label>✕</button>
+      <h2 data-t>AYARLAR</h2>
+      <div class="st-grid">
+      <label class="srow langrow"><span data-t>Dil</span><select id="lang-pause" class="lang" aria-label="Language"></select></label>
+      <label class="srow"><span data-t>Müzik</span><input type="checkbox" class="sw" data-set="music" /></label>
+      <label class="srow"><span data-t>Ses efektleri</span><input type="checkbox" class="sw" data-set="sound" /></label>
+      <label class="srow"><span data-t>Titreşim</span><input type="checkbox" class="sw" data-set="haptics" /></label>
+      <label class="srow"><span data-t>Ekran sarsıntısı</span><input type="checkbox" class="sw" data-set="shake" /></label>
+      <label class="srow"><span data-t>Solak düzen</span><input type="checkbox" class="sw" data-set="left" /></label>
+      <label class="srow"><span data-t>Boğuşmada basılı tut</span><input type="checkbox" class="sw" data-set="holdAssist" /></label>
+      <label class="srow"><span data-t>İpuçları</span><input type="checkbox" class="sw" data-set="hints" /></label>
+      <label class="srow"><span data-t>Dünya sıralamasına katıl</span><input type="checkbox" class="sw" data-set="lb" /></label>
+      <label class="srow"><span data-t>Hatırlatma bildirimleri</span><input type="checkbox" class="sw" data-set="notif" /></label>
+      <label class="srow"><span data-t>Hafta sonu kapışması bildirimleri</span><input type="checkbox" class="sw" data-set="notifDuel" /></label>
+      </div>
+      <div id="cl-box" class="cl-box" style="display:none"></div>
+      <div id="pause-info" class="pinfo"></div>
+    </div>
   </div>
 </body>
 </html>
